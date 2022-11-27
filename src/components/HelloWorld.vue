@@ -72,7 +72,7 @@ function chainFromId (evId) {
   P.getEvolutionChainById(evId).then(function(response) {
     chain = response;
     let evolvesFurther = chain.chain.evolves_to.length > 0;
-  console.log("Does it evolve further?: " + evolvesFurther);
+  console.log("Does it evolve further?: " + evolvesFurther test);
   });
 }
 
