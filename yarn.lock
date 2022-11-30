@@ -5936,6 +5936,11 @@
     "@vue/server-renderer" "3.2.45"
     "@vue/shared" "3.2.45"
 
+"vuex-extensions@^4.0.0":
+  "integrity" "sha512-cO1erkAa8QmvnpJ8vlCT3aPrP/Wje0vWOI/JFGlBiMuzGQeY3uD4pMmQo6YhtX6akIlcBS4gvpXaIe0Vedhi5g=="
+  "resolved" "https://registry.npmjs.org/vuex-extensions/-/vuex-extensions-4.0.0.tgz"
+  "version" "4.0.0"
+
 "watchpack@^2.4.0":
   "integrity" "sha512-Lcvm7MGST/4fup+ifyKi2hjyIAwcdI4HRgtvTpIUxBRhB+RFtUh8XtDOxUfctVCnhVi+QQj49i91OyvzkJl6cg=="
   "resolved" "https://registry.npmjs.org/watchpack/-/watchpack-2.4.0.tgz"

@@ -1,17 +1,35 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <HasEvolution :pkmn-name="pkmnName"></HasEvolution>
+  <p>{{ pkmnEvId }}</p>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import HasEvolution from "@/components/HasEvolution";
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
-  }
+    HasEvolution
+  },
+  created() {
+    class Pkmn {
+      pkmnName = 'bulbasaur';
+      pkmnEvId = 1;
+    }
+
+    let PkmnLocal;
+    PkmnLocal = new Pkmn('charmender',4);
+  },
+  data() {
+    return {
+      pkmnName: PkmnLocal.pkmnName,
+      pkmnEvId: PkmnLocal.pkmnEvId,
+    }
+  },
 }
+
+
 </script>
 
 <style>

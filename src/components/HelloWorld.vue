@@ -38,44 +38,6 @@ export default {
   }
 }
 
-let Pokedex;
-Pokedex = require("pokeapi-js-wrapper")
-let P;
-P = new Pokedex.Pokedex()
-
-// Lord and Savior: https://stackoverflow.com/questions/14480345/how-to-get-the-nth-occurrence-in-a-string
-function nthIndex(str, pat, n){
-  var L= str.length, i= -1;
-  while(n-- && i++<L){
-    i= str.indexOf(pat, i);
-    if (i < 0) break;
-  }
-  return i;
-}
-
-
-P.getPokemonSpeciesByName("ivysaur").then(function(response) {
-  let evId;
-  let evIdDirty;
-  let purge;
-  evIdDirty = response.evolution_chain.url;
-  purge = nthIndex(evIdDirty, '/', 6);
-  evId = evIdDirty.substring(purge + 1).slice(0, -1);
-
-  chainFromId(evId);
-
-})
-
-function chainFromId (evId) {
-  console.log("Evolution Id: " + evId);
-  let chain;
-  P.getEvolutionChainById(evId).then(function(response) {
-    chain = response;
-    let evolvesFurther = chain.chain.evolves_to.length > 0;
-  console.log("Does it evolve further?: " + evolvesFurther);
-  });
-}
-
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
