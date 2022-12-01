@@ -1,6 +1,9 @@
 import { createApp } from 'vue'
-import App from './App.vue'
-import pkmnStore from "@/stores/pkmnStore";
+import store from '@/stores/pkmnStore' // short for @/store/index
+import App from '@/App'
 
-createApp(App).mount('#app')
+const app = createApp(App);
 
+app.use(store)
+
+app.mount('#app')

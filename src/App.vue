@@ -1,34 +1,38 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HasEvolution :pkmn-name="pkmnName"></HasEvolution>
-  <p>{{ pkmnEvId }}</p>
+  <img alt="Vue logo" :src="''+pokemon.ImageUrl+''">
+  <HasEvolution :pkmn-name="pokemon.Name" :pkmn-can-evolve="pokemon.CanEvolve"></HasEvolution>
+  <v-btn elevation="5"></v-btn>
 </template>
 
 <script>
 import HasEvolution from "@/components/HasEvolution";
+import {mapActions, mapGetters, mapState} from "vuex";
 
 export default {
   name: 'App',
   components: {
     HasEvolution
   },
-  created() {
-    class Pkmn {
-      pkmnName = 'bulbasaur';
-      pkmnEvId = 1;
-    }
-
-    let PkmnLocal;
-    PkmnLocal = new Pkmn('charmender',4);
-  },
-  data() {
-    return {
-      pkmnName: PkmnLocal.pkmnName,
-      pkmnEvId: PkmnLocal.pkmnEvId,
+  methods: {
+    ...mapActions(['setPokemonNameAndSpecies', 'setPokemonEvId', 'fetchPokemonEvolutionChain', 'fetchPokemonSpecies', 'setPokemonImage']),
+    setPokemonAllData(pkmnName) {
+      this.setPokemonNameAndSpecies(pkmnName)
+          .then(() => this.setPokemonEvId())
+          .then(() => this.fetchPokemonEvolutionChain())
+          .then(() => this.setPokemonImage())
+    },
+    updatePokemonName(pkmnName) {
+      this.setPokemonAllData(pkmnName)
     }
   },
+  computed:{
+    ...mapState(['pokemon']),
+    ...mapGetters(['getPkmnName', 'getPkmnEvId', 'getCanEvolve', 'getPkmnSpecies', 'getPkmnImage'])
+  },
+  mounted() {
+  this.updatePokemonName('Raticate')
+  }
 }
-
 
 </script>
 

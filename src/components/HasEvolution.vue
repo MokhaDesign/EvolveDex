@@ -1,26 +1,23 @@
 <template>
-  <h1>{{ pkmnName }}</h1>
+  <h1>Does {{ capitalised(pkmnName) }} evolve any further?</h1>
+  <p v-if="pkmnCanEvolve">Yes, {{ capitalised(pkmnName) }} has room to grow!</p>
+  <p v-else>No, {{ capitalised(pkmnName) }} is good just the way it is!</p>
 </template>
 
 <script>
+
 export default {
   name: 'HasEvolution',
   props: {
-    pkmnName: String
+    pkmnName: String,
+    pkmnCanEvolve: Boolean
   },
   methods: {
-    getName() {
-      let pkmn
-      pkmn = this.pkmnName;
-      return pkmn
-    },
-  },
-  created() {
-    let pkmnLocal;
-    pkmnLocal = this.getName();
-
-    console.log(pkmnLocal)
-}
+    capitalised(name) {
+      if(name) {
+        return name[0].toUpperCase() + name.slice(1);
+      }}
+  }
 }
 
 
