@@ -74,23 +74,37 @@ export default createStore({
             (P.getPokemonSpeciesByName(state.pokemon.Name).then(function(response) { return commit('SET_POKEMON_SPECIES', response) }))
         },
         setPokemonEvId ({ commit, state }) {
-                    let chain, evIdLocal;
-                    chain = state.pokemon.Species.evolution_chain.url
-                    evIdLocal = chain.substring(nthIndex(chain, '/', 6) + 1).slice(0, -1)
+                    let chainLocal, evIdLocal;
+                    chainLocal = state.pokemon.Species.evolution_chain.url
+                    evIdLocal = chainLocal.substring(nthIndex(chainLocal, '/', 6) + 1).slice(0, -1)
                     return commit('SET_POKEMON_EVID', evIdLocal)
         },
         fetchPokemonEvolutionChain ({ commit, state }) {
             if(state.pokemon.EvId) {
                 (P.getEvolutionChainById(state.pokemon.EvId).then(function (response) {
-                    return commit('SET_POKEMON_CANEVOLVE', (response.chain.evolves_to.length > 0))
+                    console.log(response)
+                    let arrBool;
+                    arrBool = [];
+                    const even = (element) => element === true;
+                        if (response.chain.evolves_to.length) {
+                            if (response.chain.evolves_to[0].evolves_to.length) {
+                                if(response.chain.evolves_to[0].evolves_to[0].evolves_to.length) {
+                                    console.log("here")
+                                    arrBool.push(!response.chain.evolves_to[0].evolves_to[0].isEmpty)
+                                }
+                                console.log("there")
+                                arrBool.push(!response.chain.evolves_to[0].isEmpty)
+                            }
+                            arrBool.push(!response.chain.isEmpty)
+                            console.log(arrBool)
+                            return commit('SET_POKEMON_CANEVOLVE', arrBool.some(even))
+                    } else  {
+                        arrBool.push(false)
+                        console.log(arrBool)
+                        return commit('SET_POKEMON_CANEVOLVE', arrBool.some(even))
+                    }
                 }))
             }
-        },
-        capitalise ( { state } ) {
-            [...state.pokemonNames].forEach((e, i) => {
-                state.pokemonNames[i] = capitalized(e)
-                if(i == 1) {console.log(state.pokemonNames[i])}
-            })
         },
         fetchPokemonNames ( {state} ) {
             const interval = {

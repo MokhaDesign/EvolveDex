@@ -47,7 +47,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setPokemonNameAndSpecies', 'setPokemonEvId', 'fetchPokemonEvolutionChain', 'fetchPokemonSpecies', 'setPokemonImage', "fetchPokemonNames", "capitalise"]),
+    ...mapActions(['setPokemonNameAndSpecies', 'setPokemonEvId', 'fetchPokemonEvolutionChain', 'fetchPokemonSpecies', 'setPokemonImage', "fetchPokemonNames"]),
     setPokemonAllData(pkmnName) {
       this.setPokemonNameAndSpecies(pkmnName)
           .then(() => this.setPokemonEvId())
