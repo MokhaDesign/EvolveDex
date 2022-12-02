@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import {nthIndex} from '@/composables/utils'
+import {capitalized, nthIndex} from '@/composables/utils'
 
 const Pokedex = require('pokeapi-js-wrapper')
 const options = {
@@ -86,10 +86,20 @@ export default createStore({
                 }))
             }
         },
+        capitalise ( { state } ) {
+            [...state.pokemonNames].forEach((e, i) => {
+                state.pokemonNames[i] = capitalized(e)
+                if(i == 1) {console.log(state.pokemonNames[i])}
+            })
+        },
         fetchPokemonNames ( {state} ) {
-            return (P.getPokemonsList(0, 10).then(function(response) {
+            const interval = {
+                offset: 0,
+                limit: 904,
+            }
+            return (P.getPokemonsList(interval).then(function(response) {
                 [...response.results].forEach(element => {
-                    state.pokemonNames.push(element.name);})
+                    state.pokemonNames.push(capitalized(element.name));})
             }))
         }
     }

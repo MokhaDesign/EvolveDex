@@ -47,7 +47,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setPokemonNameAndSpecies', 'setPokemonEvId', 'fetchPokemonEvolutionChain', 'fetchPokemonSpecies', 'setPokemonImage', "fetchPokemonNames"]),
+    ...mapActions(['setPokemonNameAndSpecies', 'setPokemonEvId', 'fetchPokemonEvolutionChain', 'fetchPokemonSpecies', 'setPokemonImage', "fetchPokemonNames", "capitalise"]),
     setPokemonAllData(pkmnName) {
       this.setPokemonNameAndSpecies(pkmnName)
           .then(() => this.setPokemonEvId())
@@ -69,7 +69,7 @@ export default {
       }, 500)
     },
     inputChanged () {
-      this.updatePokemonName(this.select)
+      this.updatePokemonName((this.select).toLowerCase())
       this.search = null
       this.select = null
       document.activeElement.blur();
@@ -83,9 +83,9 @@ export default {
     ...mapGetters(['getPkmnName', 'getPkmnEvId', 'getCanEvolve', 'getPkmnSpecies', 'getPkmnImage'])
   },
   created() {
+    this.fetchPokemonNames()
   },
   mounted() {
-  this.fetchPokemonNames()
   this.setPokemonAllData('bulbasaur')
   }
 }
