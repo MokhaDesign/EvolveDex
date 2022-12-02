@@ -22,7 +22,8 @@ export default createStore({
                     Species: null,
                     Colour: null,
                     ImageUrl: null,
-                }
+                },
+            pokemonNames: [null]
         }
     },
     getters: { // getters
@@ -85,5 +86,11 @@ export default createStore({
                 }))
             }
         },
+        fetchPokemonNames ( {state} ) {
+            return (P.getPokemonsList(0, 10).then(function(response) {
+                [...response.results].forEach(element => {
+                    state.pokemonNames.push(element.name);})
+            }))
+        }
     }
 })
