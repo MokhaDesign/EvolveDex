@@ -7,7 +7,7 @@
 <script>
 
 export default {
-  name: 'HasEvolution',
+  name: 'MainCard',
   props: {
     pkmnName: String,
     pkmnCanEvolve: Boolean
@@ -19,11 +19,6 @@ export default {
       }}
   }
 }
-
-
-
-
-
 
 </script>
 

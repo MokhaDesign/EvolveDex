@@ -4,7 +4,7 @@ import App from '@/App'
 import vuetify from './plugins/vuetify'
 import { loadFonts } from './plugins/webfontloader'
 
-loadFonts()
+loadFonts('Montserrat', 'Raleway')
 
 
 const app = createApp(App).use(store);

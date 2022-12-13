@@ -22,7 +22,13 @@ export default createStore({
                     Species: null,
                     Colour: null,
                     ImageUrl: null,
+                    EvChain: [null]
                 },
+            pokemonEvolutions: [{
+                EvolutionName: null,
+                EvolutionImageUrl: null,
+                EvolutionTrigger: null,
+            }],
             pokemonNames: [null]
         }
     },
@@ -33,6 +39,7 @@ export default createStore({
         getPkmnSpecies: state => state.pokemon.Species,
         getPkmnColour: state => state.pokemon.Colour,
         getPkmnImage: state => state.pokemon.ImageUrl,
+        getPkmnEvChain: state => state.pokemon.EvChain
     },
     mutations: { // called via commit('MUTATION_NAME', payload); Should not contain any logic of whether to mutate the data or not
         SET_POKEMON_NAME(state, pokemonName) {
@@ -52,6 +59,9 @@ export default createStore({
         },
         SET_POKEMON_IMAGE(state, pokemonImageUrl) {
             state.pokemon.ImageUrl = pokemonImageUrl
+        },
+        SET_POKEMON_EVCHAIN(state, pokemonEvChain) {
+            state.pokemon.EvChain = pokemonEvChain
         }
     },
     actions: { // called via dispatch('actionName', payload)
@@ -63,9 +73,9 @@ export default createStore({
                     commit('SET_POKEMON_COLOUR', response.color.name)) }))
             )
         },
-        setPokemonImage({ commit, state }) {
+        setPokemonImage({ commit }, pkmnName) {
             return (
-                (P.getPokemonByName(state.pokemon.Name).then(function(response) {
+                (P.getPokemonByName(pkmnName).then(function(response) {
                     return commit('SET_POKEMON_IMAGE', response.sprites.other["official-artwork"].front_default)
                 }))
             )
@@ -81,32 +91,17 @@ export default createStore({
         },
         fetchPokemonEvolutionChain ({ commit, state }) {
             if(state.pokemon.EvId) {
-                (P.getEvolutionChainById(state.pokemon.EvId).then(function (response) {
-                    console.log(response)
-                    let arrBool;
-                    arrBool = [];
-                    const even = (element) => element === true;
-                        if (response.chain.evolves_to.length) {
-                            if (response.chain.evolves_to[0].evolves_to.length) {
-                                if(response.chain.evolves_to[0].evolves_to[0].evolves_to.length) {
-                                    console.log("here")
-                                    arrBool.push(!response.chain.evolves_to[0].evolves_to[0].isEmpty)
-                                }
-                                console.log("there")
-                                arrBool.push(!response.chain.evolves_to[0].isEmpty)
-                            }
-                            arrBool.push(!response.chain.isEmpty)
-                            console.log(arrBool)
-                            return commit('SET_POKEMON_CANEVOLVE', arrBool.some(even))
-                    } else  {
-                        arrBool.push(false)
-                        console.log(arrBool)
-                        return commit('SET_POKEMON_CANEVOLVE', arrBool.some(even))
-                    }
+                (P.getEvolutionChainById(state.pokemon.EvId)
+                    .then(function (response) {
+                    state.pokemon.EvChain = [];
+                    [...response.chain.evolves_to].forEach(element => {
+                        state.pokemon.EvChain.push(element)})
+                    console.log(state.pokemon.EvChain)
+                    return commit('SET_POKEMON_EVCHAIN', state.pokemon.EvChain)
                 }))
             }
         },
-        fetchPokemonNames ( {state} ) {
+        fetchPokemonNames ( { state } ) {
             const interval = {
                 offset: 0,
                 limit: 904,
@@ -115,6 +110,42 @@ export default createStore({
                 [...response.results].forEach(element => {
                     state.pokemonNames.push(capitalized(element.name));})
             }))
-        }
+        },
+        checkPokemonEvolutionChain ({ commit, state }) {
+            if (state.pokemon.EvChain[0] != null) {
+                [...state.pokemon.EvChain].forEach(element => {
+                    if (element.species.name.toString() === state.pokemon.Name.toString()) {
+                        // Check if there is further evolution
+                        if (element.evolves_to != null) {
+                            [...element.evolves_to].forEach(element => {
+                                console.log("Next evolution: " + element.species.name.toString())
+                                return commit('SET_POKEMON_CANEVOLVE', true)
+                            })
+                        } else {
+                            console.log("Else" + element.species.name)
+                            return commit('SET_POKEMON_CANEVOLVE', false)
+                        }
+                    } else {
+                        // Check if there is further evolution
+                        return [...element.evolves_to].forEach(element => {
+                            if (element.species.name.toString() !== state.pokemon.Name.toString()) {
+                                console.log("Inside")
+                                return commit('SET_POKEMON_CANEVOLVE', true)
+                            } else {
+                                console.log("Current Stage: " + element.species.name.toString())
+                                return commit('SET_POKEMON_CANEVOLVE', false)
+                            }
+                        })
+                        // if (element.species.name.toString() === state.pokemon.Name.toString()) {
+                        //     return commit('SET_POKEMON_CANEVOLVE', false)
+                        // }
+                    }
+                })
+                // console.log("Here we are")
+                // return commit('SET_POKEMON_CANEVOLVE', true)
+            } else {
+                console.log("Base Pokemon, doesn't evolve")
+                return commit('SET_POKEMON_CANEVOLVE', false) }
+        },
     }
 })

@@ -1,9 +1,15 @@
 <template>
+<div v-if="!pokemon.Name && !showCards"></div>
+  <div v-else>
+  <img alt="Pokemon Artwork" :src="''+pokemon.ImageUrl+''">
+  <MainCard :pkmn-name="pokemon.Name" :pkmn-can-evolve="pokemon.CanEvolve"></MainCard>
+  <div v-if="pokemon.CanEvolve">
+  <EvolutionList :pkmn-ev-chain-list="pokemon.EvChain"></EvolutionList>
+    <p>Test</p>
+  </div>
+</div>
 
-  <img alt="Vue logo" :src="''+pokemon.ImageUrl+''">
-  <HasEvolution :pkmn-name="pokemon.Name" :pkmn-can-evolve="pokemon.CanEvolve"></HasEvolution>
-
-  <v-autocomplete
+    <v-autocomplete
       clearable
       filled
       rounded
@@ -25,38 +31,45 @@
 </template>
 
 <script>
-import HasEvolution from "@/components/HasEvolution";
+import MainCard from "@/components/MainCard";
+import EvolutionList from "@/components/EvolutionList";
 import {mapActions, mapGetters, mapState} from "vuex";
 
 export default {
   name: 'App',
   components: {
-    HasEvolution
+    MainCard,
+    EvolutionList
   },
   data () { return {
     search: null,
     select: null,
     isLoading: false,
-    items: []}
+    items: [],
+    showCards: false}
   },
   watch: {
     search (val) {
-      if (val.length > 3) {
+      if (val && val.length >= 3) {
         val && val !== this.select && this.querySelections(val)
       }
     },
   },
   methods: {
-    ...mapActions(['setPokemonNameAndSpecies', 'setPokemonEvId', 'fetchPokemonEvolutionChain', 'fetchPokemonSpecies', 'setPokemonImage', "fetchPokemonNames"]),
-    setPokemonAllData(pkmnName) {
-      this.setPokemonNameAndSpecies(pkmnName)
-          .then(() => this.setPokemonEvId())
-          .then(() => this.fetchPokemonEvolutionChain())
-          .then(() => this.setPokemonImage())
+    ...mapActions(['setPokemonNameAndSpecies', 'setPokemonEvId', 'fetchPokemonEvolutionChain', 'fetchPokemonSpecies', 'setPokemonImage', 'fetchPokemonNames', 'checkPokemonEvolutionChain']),
+    async setPokemonAllData(pkmnName) {
+      await (this.showCards = false)
+      await this.setPokemonNameAndSpecies(pkmnName)
+      await this.setPokemonImage(pkmnName)
+      await this.setPokemonEvId()
+      await this.fetchPokemonEvolutionChain()
+      await this.checkPokemonEvolutionChain()
+      await console.log(this.pokemon.CanEvolve)
+      return (this.showCards = true)
     },
     updatePokemonName(pkmnName) {
-      this.setPokemonAllData(pkmnName)
       this.emptyArray()
+      this.setPokemonAllData(pkmnName)
     },
     querySelections (v) {
       this.isLoading = true
@@ -70,9 +83,9 @@ export default {
     },
     inputChanged () {
       this.updatePokemonName((this.select).toLowerCase())
+      document.activeElement.blur();
       this.search = null
       this.select = null
-      document.activeElement.blur();
     },
     emptyArray() {
       this.items.splice(0,this.items.length)
@@ -80,13 +93,12 @@ export default {
   },
   computed:{
     ...mapState(['pokemon', 'pokemonNames']),
-    ...mapGetters(['getPkmnName', 'getPkmnEvId', 'getCanEvolve', 'getPkmnSpecies', 'getPkmnImage'])
+    ...mapGetters(['getPkmnName', 'getPkmnEvId', 'getCanEvolve', 'getPkmnSpecies', 'getPkmnImage', 'getPkmnEvChain'])
   },
   created() {
-    this.fetchPokemonNames()
+  this.fetchPokemonNames()
   },
   mounted() {
-  this.setPokemonAllData('bulbasaur')
   }
 }
 
@@ -94,7 +106,7 @@ export default {
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Montserrat, Raleway, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
