@@ -62,7 +62,7 @@ export default {
   methods: {
     ...mapActions([
       // 'setPokemonNameAndSpecies', 'setPokemonEvId', 'fetchPokemonEvolutionChain', 'setPokemonImage',
-      'fetchPokemonNames', 'setPokemon', 'setPokemonSpeciesEvId', 'cleanEvChain'
+      'fetchPokemonNames', 'setPokemon', 'setPokemonSpeciesEvId', 'cleanEvChain', 'checkPkmnIfEvolve'
       // 'checkPokemonEvolutionChain'
     ]),
     // startUpGrade() {
@@ -111,11 +111,9 @@ export default {
   created() {
     // this.emptyArray()
     this.fetchPokemonNames()
-        // 132 Eevee; 4 Charmeleon; 144 Articuno; 43 Oddish; 438 Mime Jr; 280 Kirlia
-        .then(() => console.log(this.pokemonNames[280]))
-        .then(() => this.setPokemon(this.pokemonNames[280]))
-    // setTimeout(() => this.setPokemon(this.pokemonNames[4]), 2000)
-    // setTimeout(() => console.log(this.pokemonNames[4]), 2000)
+        .then(() => console.log(this.pokemonNames[4]))
+        .then(() => this.setPokemon(this.pokemonNames[4]))
+        // 132 Eevee; 4 Charmeleon; 144 Articuno; 43 Oddish; 438 Mime Jr; 280 Kirlia; 757 Salandit
   },
   mounted() {
 
