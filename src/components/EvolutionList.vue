@@ -16,7 +16,7 @@ export default {
       if(name) {
         return name[0].toUpperCase() + name.slice(1);
       }}
-  }
+  },
 }
 </script>
 

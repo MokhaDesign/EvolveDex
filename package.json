@@ -10,6 +10,7 @@
   "dependencies": {
     "@mdi/font": "5.9.55",
     "core-js": "^3.8.3",
+    "grade-js": "^1.0.10",
     "pokeapi-js-wrapper": "^1.2.2",
     "roboto-fontface": "*",
     "vue": "^3.2.13",
