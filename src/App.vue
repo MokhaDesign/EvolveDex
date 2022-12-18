@@ -1,54 +1,60 @@
 <template>
-<!--  <div class="gradient-wrap" id="gradient-background">-->
-<!--<div v-if="!showCards"></div>-->
-<!--  <div v-else>-->
-<!--  <img alt="Pokemon Artwork" :src="pokemon.ImageUrl" crossorigin="anonymous"/>-->
-<!--  <MainCard :pkmn-name="pokemon.Name" :pkmn-can-evolve="pokemon.CanEvolve"></MainCard>-->
-<!--  <div v-if="pokemon.CanEvolve">-->
-<!--  <EvolutionList :pkmn-ev-chain-list="pokemon.EvChain"></EvolutionList>-->
-<!--  </div></div>-->
-
-
+  <GradientBackground :pokemon="pokemon.ImageUrl"></GradientBackground>
+<v-container class="flex-column align-center" style="display: flex; min-height: 100vh;">
+  <v-container class="flex-shrink-1">
+    <v-row>
+      <v-col class=".searchBar" cols="12" sm="6" md="12">
+  <!--  Search Bar  -->
     <v-autocomplete
-      clearable
-      filled
-      rounded
-      solo
+        flat solo
+      id="pkmnSearchBar"
       label="Search Pokémon"
       v-model="select"
       v-model:search="search"
+      :loading="showProgressBar"
+      v-on:update:modelValue="inputChanged"
       :items="items"
       item-text="Name"
       item-value="Handle"
-      :loading="isLoading"
       :menu-props="{ maxHeight: 500 }"
       allow-overflow="false"
       return-object
-      hide-no-data
       hide-details
       hide-selected
-  ></v-autocomplete>
-<!--  </div>-->
+      hide-no-data
+    >
+    </v-autocomplete>
+      </v-col>
+    </v-row>
+  </v-container>
+  <v-container v-if="showCards" class="cardWrapper fill-height flex-grow-1">
+    <v-row>
+      <v-col>
+    <PokemonCard :pokemon="pokemon"></PokemonCard>
+      </v-col>
+    </v-row>
+  </v-container>
+</v-container>
 </template>
 
 <script>
-// import MainCard from "@/components/MainCard";
-// import EvolutionList from "@/components/EvolutionList";
+import PokemonCard from "@/components/PokemonCard";
+import GradientBackground from "@/components/GradientBackground";
 import {mapActions, mapGetters, mapState} from "vuex";
-// import Grade from "grade-js";
 
 export default {
   name: 'App',
   components: {
-    // MainCard,
-    // EvolutionList
+    PokemonCard,
+    GradientBackground
   },
   data () { return {
     search: null,
     select: null,
     isLoading: false,
     items: [],
-    showCards: false}
+    showCards: false,
+    showProgressBar: false}
   },
   watch: {
     search (val) {
@@ -60,29 +66,8 @@ export default {
     },
   },
   methods: {
-    ...mapActions([
-      // 'setPokemonNameAndSpecies', 'setPokemonEvId', 'fetchPokemonEvolutionChain', 'setPokemonImage',
-      'fetchPokemonNames', 'setPokemon', 'setPokemonSpeciesEvId', 'cleanEvChain', 'checkPkmnIfEvolve'
-      // 'checkPokemonEvolutionChain'
-    ]),
-    // startUpGrade() {
-    //       setTimeout(() => {Grade(document.querySelectorAll(".gradient-wrap"));}, 5000)
-    // },
-    // async setPokemonAllData(pkmnName) {
-    //     this.showCards = false
-    //     this.setPokemonNameAndSpecies(pkmnName)
-    //         .then(() => this.setPokemonImage(pkmnName))
-    //         .then(() => this.setPokemonEvId())
-    //         .then(() => this.fetchPokemonEvolutionChain())
-    //         .then(() => this.checkPokemonEvolutionChain())
-    //         .then(() => console.log(this.getCanEvolve))
-    //         .then(() => this.showCards = true)
-    //         .then(() => this.startUpGrade())
-    // },
-    // updatePokemonName(pkmnName) {
-    //   this.emptyArray()
-    //   this.setPokemonAllData(pkmnName)
-    // },
+    ...mapActions(['fetchPokemonNames', 'setPokemon', 'setPokemonSpeciesEvId', 'cleanEvChain', 'checkPkmnIfEvolve']),
+    // Search & Retrieve
     querySelections (v) {
       this.isLoading = true
       // Simulated ajax query
@@ -91,51 +76,99 @@ export default {
         this.isLoading = false
       }, 200)
     },
-    // async inputChanged () {
-    //   try {
-    //     await this.updatePokemonName((this.select).toLowerCase())
-    //   } finally {
-    //     document.activeElement.blur()
-    //     this.search = null
-    //     this.select = null
-    //   }
-    // },
-    // emptyArray() {
-    //   this.items.splice(0,this.items.length)
-    // }
+    // Search & Retrieve
+    inputChanged () {
+      return new Promise((resolve) => {
+        this.setPokemon((this.pokemonNames.filter((e) => { return e.Name === this.select }))[0]).then(() => {
+          resolve()
+        })
+          this.showCards = true
+      })
+      },
   },
   computed:{
     ...mapState(['pokemon', 'pokemonNames']),
     ...mapGetters(['getPkmnName', 'getPkmnEvId', 'getCanEvolve', 'getPkmnSpecies', 'getPkmnImage', 'getPkmnEvChain'])
   },
   created() {
-    // this.emptyArray()
     this.fetchPokemonNames()
-        .then(() => console.log(this.pokemonNames[4]))
-        .then(() => this.setPokemon(this.pokemonNames[4]))
-        // 132 Eevee; 4 Charmeleon; 144 Articuno; 43 Oddish; 438 Mime Jr; 280 Kirlia; 757 Salandit
   },
   mounted() {
-
   }
 }
 
 </script>
 
 <style>
+
+*
+{
+  -webkit-transition: all .64s ease-in-out;
+  -moz-transition:  all .64s ease-in-out;
+  -ms-transition: all .64s ease-in-out;
+  -o-transition:  all .64s ease-in-out;
+  transition: all .64s ease-in-out;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera
+   Scrollbar Test */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 #app {
-  font-family: Montserrat, Raleway, Arial, sans-serif;
+  font-family: Raleway, Montserrat, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
 }
 
-#gradient-background {
-  height: calc(100vh - 6.4rem);
-  overflow: auto;
-  width: auto;
-  margin: 3.2rem;
+.v-field {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  box-shadow: 20px 20px 50px rgba(0,0,0, 0.15);
+  border-top: 1px solid rgba(255,255,255,0.25);
+  border-left: 1px solid rgba(255,255,255,0.25);
+}
+
+.v-list {
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 0 0 15px 15px !important;
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  box-shadow: 20px 20px 50px rgba(0,0,0, 0.15);
+  border-top: 1px solid rgba(255,255,255,0.25);
+  border-left: 1px solid rgba(255,255,255,0.25);
+}
+
+.v-list--border {
+  display: none;
+}
+
+.v-progress-linear {
+  height: 50px;
+}
+.v-field__outline {
+  display: none !important;
+}
+
+.searchBar {
+  padding: 1.2rem;
+}
+
+.cardWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 </style>

@@ -220,11 +220,11 @@ export default createStore({
                 return 3
             }
         },
-        checkPkmnIfEvolve ({ state }) {
+        checkPkmnIfEvolve ({ state, commit }) {
             return new Promise((resolve) => {
                 [...state.pokemonEvolutions].forEach(element => {
                     if (element.Name === state.pokemon.Handle) {
-                        resolve(state.pokemon.NextEvolutions = [], state.pokemon.NextEvolutions.push(state.pokemonEvolutions.filter((e) => e.Stage === element.Stage+1)))
+                        resolve(state.pokemon.NextEvolutions = [], state.pokemon.NextEvolutions.push(state.pokemonEvolutions.filter((e) => e.Stage === element.Stage+1)), commit('SET_POKEMON_CANEVOLVE', (state.pokemon.NextEvolutions[0].length != 0)))
                     }
                 })
             })
