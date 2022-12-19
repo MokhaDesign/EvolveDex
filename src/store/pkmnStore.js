@@ -19,6 +19,7 @@ export default createStore({
                     Name: null,
                     Handle: null,
                     Id: null,
+                    Types: [],
                     EvId: null,
                     CanEvolve: null,
                     Species: null,
@@ -26,6 +27,7 @@ export default createStore({
                     EvChain: [null],
                     NextEvolutions: [{
                         Name: null,
+                        Types: [],
                         ImageUrl: null,
                         MinLevel: null,
                         Trigger: null,
@@ -45,10 +47,12 @@ export default createStore({
                         TimeOfDay: null,
                         TradeSpecies: null,
                         TurnUpsideDown: null,
-                    }]
+                    }],
+                    EvolutionsToShow: []
                 },
             pokemonEvolutions: [{
                 Name: null,
+                Types: [],
                 ImageUrl: null,
                 MinLevel: null,
                 Trigger: null,
@@ -111,6 +115,9 @@ export default createStore({
         },
         SET_POKEMON_ID(state, pokemonId) {
             state.pokemon.Id = pokemonId
+        },
+        SET_EVOLUTIONS_TO_SHOW(state, pokemonEvolutionsToShow) {
+            state.pokemon.EvolutionsToShow = pokemonEvolutionsToShow
         }
     },
     actions: { // called via dispatch('actionName', payload)
@@ -228,6 +235,9 @@ export default createStore({
                     }
                 })
             })
+        },
+        setEvolutionsToShown ( { commit }, pokemonEvolutionsToShow ) {
+            return (commit('SET_EVOLUTIONS_TO_SHOW', pokemonEvolutionsToShow))
         }
     }
 })

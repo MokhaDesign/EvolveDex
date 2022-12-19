@@ -6,8 +6,8 @@
         <v-card class="py-3 mainCard" id="pokemonCardTilt">
           <v-row class="justify-center"  style="justify-content: center">
              <!-- Pokemon Image  -->
-            <v-col cols="10" md="4" lg="3" style="display: flex; align-items: center;">
-              <v-img id="pokemonImage" style="z-index: 1" max-height="475" max-width="475" alt="Pokemon Artwork" :src="pokemon.ImageUrl" crossorigin="anonymous"/>
+            <v-col cols="10" md="4" lg="3" style="display: flex; justify-content: center; align-items: center;">
+              <v-img id="pokemonImage" style="z-index: 1; justify-content: center;" max-height="475" max-width="475" alt="Pokemon Artwork" :src="pokemon.ImageUrl" :lazy-src="pokemon.ImageUrl" crossorigin="anonymous"/>
             </v-col>
           <!-- Pokemon Info  -->
             <v-col cols="12" md="8" lg="8" style="z-index: 2">

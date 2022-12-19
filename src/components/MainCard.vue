@@ -45,6 +45,7 @@ p {
   padding-top: 1.2rem;
   font-family: Montserrat, Railway, Arial, sans-serif;
 }
+
 .v-divider {
   background: rgba(255, 255, 255, 0.01);
   border-radius: 25px;

@@ -35,6 +35,7 @@ export default {
 
     // Vibrant
     updateBackground (newPokemon) {
+      if (this.pokemon) {
       return new Promise((resolve) => {
           Vibrant.from(newPokemon).getPalette()
               .then((newPalette) => {
@@ -44,12 +45,18 @@ export default {
                 let bodyTextColor = newPalette.DarkMuted.bodyTextColor
                 let g = document.getElementById('gradientBackground')
                 let r = document.getElementById('pokemonCard')
+                let c = document.getElementById('pokemonEvolutionCard')
                 g.style.setProperty('--darkBgColor', darkBG)
                 g.style.setProperty('--lightBgColor', lightBG)
                 r.style.setProperty('--titleTextColor', titleTextColor)
                 r.style.setProperty('--bodyTextColor', bodyTextColor)
+                if (c) {
+                  c.style.setProperty('--titleTextColor', titleTextColor)
+                  c.style.setProperty('--bodyTextColor', bodyTextColor)
+                }
               }).then(() => { resolve() })
       })
+    }
     }
   },
   mounted() {
@@ -61,6 +68,11 @@ export default {
 
 <style>
 #pokemonCard {
+  --titleTextColor: #FFF;
+  --bodyTextColor: #FFF;
+}
+
+#pokemonEvolutionCard {
   --titleTextColor: #FFF;
   --bodyTextColor: #FFF;
 }
@@ -87,6 +99,13 @@ export default {
   color: var(--titleTextColor);
 }
 #pokemonCard * > p {
+  color: var(--bodyTextColor);
+}
+
+#pokemonEvolutionCard * > h1 {
+  color: var(--titleTextColor);
+}
+#pokemonEvolutionCard * > p {
   color: var(--bodyTextColor);
 }
 </style>

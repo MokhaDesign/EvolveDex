@@ -3,7 +3,7 @@
 <v-container class="flex-column align-center" style="display: flex; min-height: 100vh;">
   <v-container class="flex-shrink-1">
     <v-row>
-      <v-col class=".searchBar" cols="12" sm="6" md="12">
+      <v-col id="#searchBar" class=".searchBar" cols="12" sm="6" md="12">
   <!--  Search Bar  -->
     <v-autocomplete
         flat solo
@@ -27,24 +27,43 @@
       </v-col>
     </v-row>
   </v-container>
-  <v-container v-if="showCards" class="cardWrapper fill-height flex-grow-1">
+
+  <v-container v-if="showCards" class="flex-grow-1 d-flex flex-column justify-center">
+
+  <v-container class="cardWrapper fill-height">
     <v-row>
       <v-col>
     <PokemonCard :pokemon="pokemon"></PokemonCard>
       </v-col>
     </v-row>
   </v-container>
+
+  <v-container class="fill-height">
+    <PokemonEvolutionCard v-if="pokemon.NextEvolutions[0].length > 0" :evolutions="pokemon.NextEvolutions" :evolutions-to-shown="pokemon.EvolutionsToShow"></PokemonEvolutionCard>
+  </v-container>
+
+  </v-container>
+
 </v-container>
+
+<BackToTop></BackToTop>
+
 </template>
 
 <script>
 import PokemonCard from "@/components/PokemonCard";
 import GradientBackground from "@/components/GradientBackground";
+import PokemonEvolutionCard from "@/components/PokemonEvolutionCard";
 import {mapActions, mapGetters, mapState} from "vuex";
+import BackToTop from "@/components/BackToTop";
+import { useHead } from '@unhead/vue'
+
 
 export default {
   name: 'App',
   components: {
+    BackToTop,
+    PokemonEvolutionCard,
     PokemonCard,
     GradientBackground
   },
@@ -92,9 +111,18 @@ export default {
   },
   created() {
     this.fetchPokemonNames()
+    useHead({
+      title: 'E•Dex',
+      meta: [
+        {
+          name: 'EvolveDex',
+          content: 'An easy peasy **spoiler-free** micro-app to check if a Pokémon has remaining evolutions.',
+        },
+      ],
+    })
   },
   mounted() {
-  }
+  },
 }
 
 </script>
@@ -103,11 +131,11 @@ export default {
 
 *
 {
-  -webkit-transition: all .64s ease-in-out;
-  -moz-transition:  all .64s ease-in-out;
-  -ms-transition: all .64s ease-in-out;
-  -o-transition:  all .64s ease-in-out;
-  transition: all .64s ease-in-out;
+  -webkit-transition: all 1.34s ease-in-out;
+  -moz-transition:  all 1.34s ease-in-out;
+  -ms-transition: all 1.34s ease-in-out;
+  -o-transition:  all 1.34s ease-in-out;
+  transition: all 1.34s ease-in-out;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera
