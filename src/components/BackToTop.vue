@@ -18,7 +18,7 @@ export default {
     },
     onClick() {
       this.$nextTick(() =>
-          document.getElementById('#searchBar').scrollIntoView({behavior: 'smooth'})
+          document.getElementById('searchBar').scrollIntoView({behavior: 'smooth'})
       );
     },
   }

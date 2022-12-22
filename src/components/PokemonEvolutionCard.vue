@@ -1,22 +1,26 @@
 <template>
-  <v-col cols="6" md="8" sm="12" style="display: inline-grid;">
-  <v-container id="pokemonEvolutionCard">
-  <v-row style="justify-content:center">
-      <v-col v-for="item in evolutions[0]" :class="showCard(item) ? '' : 'd-none' " :key="item.Id" cols="4" lg="4" sm="6">
+  <v-col cols="6" md="8" sm="12" style="display: inline-grid;" class="pt-0">
+  <v-container id="pokemonEvolutionCard" class="pt-0" >
+  <v-row style="justify-content:center" >
+      <v-col style="display: inline-grid;" v-for="item in evolutions[0]" :class="showCard(item) ? '' : 'd-none' " :key="item.Id" cols="4" lg="4" sm="6">
         <v-container class="py-3 pkmnEvoCard pkmnEvoCardTilt">
-          <v-row class="justify-center"  style="justify-content: center; text-transform: capitalize;">
-            <h1 v-if="item.Name">{{ (item.Name) }}</h1>
+          <v-row class="justify-center">
+              <h1 style="text-transform: capitalize;" v-if="item.Name" v-text="' ' + item.Name" />
+          </v-row>
+            <v-row class="justify-center">
             <v-divider></v-divider>
-            <!-- Pokemon Image  -->
+               <!-- Pokemon Image  -->
             <v-col style="display: flex; justify-content: center; align-items: center;">
               <v-img style="z-index: 1; justify-content: center;" max-height="237.5" max-width="237.5" alt="Pokemon Artwork" :src="item.ImageUrl" :lazy-src="item.ImageUrl"  crossorigin="anonymous"/>
             </v-col>
           </v-row>
             <!-- Pokemon Info  -->
-          <v-row class="justify-center"  style="justify-content: center; text-transform: capitalize; margin-bottom: 1.2rem;">
+          <v-row class="justify-center"  style="justify-content: center; margin-bottom: 1.2rem;">
             <v-divider></v-divider>
-            <v-col cols="12" md="8" lg="8" style="z-index: 2">
-              <p style="text-transform: capitalize">{{ (item.Trigger).replace('-', ' ') }}</p>
+            <h1 class="pokemonTypes" v-for="type in item.Types" v-bind:key="type" v-text="getIcon(type)" style="text-align: start"/>
+            <v-divider></v-divider>
+            <v-col cols="12" md="12" lg="12" style="z-index: 2" class="pt-0">
+              <p><span style="text-transform: capitalize" v-text="item.Trigger.replace(/-/g, ' ')" /> <span class="modifiers" v-text="' · ' + this.makeModifierDescription(item)" /></p>
             </v-col>
           </v-row>
         </v-container>
@@ -28,6 +32,8 @@
 
 <script>
 import VanillaTilt from "vanilla-tilt";
+import {getIconFromType, appendEvolutionModifier} from "@/composables/pkmnMixin";
+import {capitaliseFirst} from "@/composables/utils"
 
 export default {
   name: "PokemonEvolutionCard",
@@ -35,6 +41,7 @@ export default {
     evolutions: [Object],
     evolutionsToShown: [Object],
   },
+  mixins: ['getIconFromType', 'appendEvolutionModifiers', 'capitaliseFirst'],
   methods: {
     tilt() {
       const cards = document.getElementsByClassName("pkmnEvoCardTilt");
@@ -52,6 +59,17 @@ export default {
     },
     showCard(e) {
       return this.evolutionsToShown.some((v) => {return v === this.evolutions[0].indexOf(e)})
+    },
+    getIcon(pkmnType) {
+      return getIconFromType(pkmnType)
+    },
+    appendModifiers(pokemonEvolution) {
+      return appendEvolutionModifier(pokemonEvolution)
+    },
+    makeModifierDescription(pkmnModifiers) {
+      let string
+          string = (this.appendModifiers(pkmnModifiers)).toString().replace(/,/g, ' ')
+      return capitaliseFirst(string)
     }
   },
   mounted() {
@@ -130,6 +148,12 @@ p {
   .pkmnEvoCard:after {
     display: none;
   }
+}
+
+.pokemonTypes {
+  font-family: Essentiarum;
+  font-weight: normal;
+  font-display: block;
 }
 
 

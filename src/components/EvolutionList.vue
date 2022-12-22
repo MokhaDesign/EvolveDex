@@ -3,8 +3,8 @@
   <v-row>
     <v-col>
   <v-btn-toggle  v-model="evoSelected" v-on:update:modelValue="evoBtnClicked" id="evoBtnWrapper" selected-class="evoBtnSelected" borderless multiple>
-  <v-btn  v-for="item in pkmnEvChainList[0]" :key="item.Name" rounded="pill" style="text-transform: capitalize" variant="plain">
-    <p>{{ (item.Trigger).replace('-', ' ') }}</p>
+  <v-btn  v-for="item in pkmnEvChainList[0]" :key="item.Name" rounded="pill" variant="plain">
+    <p><span class="pokemonTypes" v-for="type in item.Types" v-bind:key="type" v-text="getIcon(type)" /> <span style="text-transform: capitalize"> · {{ (item.Trigger).replace(/-/g, ' ') }}</span></p>
   </v-btn>
   </v-btn-toggle>
   <v-divider></v-divider>
@@ -18,7 +18,9 @@
 </template>
 
 <script>
-import {mapActions} from "vuex";
+import { mapActions } from "vuex";
+import { getIconFromType } from "@/composables/pkmnMixin";
+
 
 export default {
   name: 'EvolutionList',
@@ -32,6 +34,7 @@ export default {
       fromBtn: true,
     }
   },
+  mixins: ['getIconFromType'],
   watch: {
     evoSelected(newValue, oldValue) {
       const allBtnSwitch = newValue.length % this.pkmnEvChainList[0].length;
@@ -44,15 +47,17 @@ export default {
       switch (allBtnSwitch) {
         case 0:
           newValue.length === this.pkmnEvChainList[0].length ? clickBtn() : ''
+          this.showAll = true
           this.fromBtn = true
               break
         case newValue.length:
           oldValue.length === this.pkmnEvChainList[0].length ? clickBtn() : ''
+          this.showAll = false
           this.fromBtn = true
               break
-        default:
-          this.fromBtn = true
-          break
+        // default:
+        //   this.fromBtn = true
+        //   break
       }
     }
   },
@@ -71,16 +76,22 @@ export default {
                   this.showAll = true
           ))
         } else {
-          this.evoSelected = [],
+          this.evoSelected = [null],
               this.setEvolutionsToShown(this.evoSelected),
               this.showAll = false
         }}
-      }
+      },
+    getIcon(pkmnType) {
+      return getIconFromType(pkmnType)
+    },
+  },
+  beforeUpdate() {
+    this.evoSelected = []
+    this.setEvolutionsToShown(this.evoSelected)
+    this.showAll = false
+    this.fromBtn = true
   },
   updated() {
-    this.evoSelected = []
-    this.showAll = false
-    this.setEvolutionsToShown(this.evoSelected)
   }
 }
 </script>
@@ -141,5 +152,11 @@ export default {
 
 p {
   font-family: Montserrat, Railway, Arial, sans-serif;
+}
+
+.pokemonTypes {
+  font-family: Essentiarum;
+  font-weight: normal;
+  font-display: block;
 }
 </style>

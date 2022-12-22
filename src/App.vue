@@ -3,7 +3,7 @@
 <v-container class="flex-column align-center" style="display: flex; min-height: 100vh;">
   <v-container class="flex-shrink-1">
     <v-row>
-      <v-col id="#searchBar" class=".searchBar" cols="12" sm="6" md="12">
+      <v-col id="searchBar" class=".searchBar" cols="12" sm="6" md="12">
   <!--  Search Bar  -->
     <v-autocomplete
         flat solo

@@ -1,4 +1,7 @@
-
+// Nice: https://stackoverflow.com/a/1026087
+export function capitaliseFirst(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 export function nthIndex(str, pat, n){
     var L= str.length, i= -1;
@@ -12,13 +15,13 @@ export function nthIndex(str, pat, n){
 // Lord and Savior: https://stackoverflow.com/questions/14480345/how-to-get-the-nth-occurrence-in-a-string
 
 export function  capitalized(string) {
-    let arrStr
-    arrStr = string.split(" ")
-    for (let i = 0; i < arrStr.length; i++) {
-        arrStr[i] = arrStr[i].charAt(0).toUpperCase() + arrStr[i].slice(1);
-    }
+        let arrStr
+        arrStr = string.split(" ")
+        for (let i = 0; i < arrStr.length; i++) {
+            arrStr[i] = arrStr[i].charAt(0).toUpperCase() + arrStr[i].slice(1);
+        }
 
-    return arrStr.join(" ");
+        return arrStr.join(" ")
 }
 
 

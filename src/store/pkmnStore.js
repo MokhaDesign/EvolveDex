@@ -31,22 +31,24 @@ export default createStore({
                         ImageUrl: null,
                         MinLevel: null,
                         Trigger: null,
-                        Item: null,
-                        Gender: null,
-                        HeldItem: null,
-                        KnownMove: null,
-                        KnownMoveType: null,
-                        Location: null,
-                        MinAffection: null,
-                        MinBeauty: null,
-                        MinHappiness: null,
-                        NeedsOverworldRain: null,
-                        PartySpecies: null,
-                        PartyType: null,
-                        PhysicalStats: null,
-                        TimeOfDay: null,
-                        TradeSpecies: null,
-                        TurnUpsideDown: null,
+                        Modifiers: {
+                            Item: null,
+                            Gender: null,
+                            HeldItem: null,
+                            KnownMove: null,
+                            KnownMoveType: null,
+                            Location: null,
+                            MinAffection: null,
+                            MinBeauty: null,
+                            MinHappiness: null,
+                            NeedsOverworldRain: null,
+                            PartySpecies: null,
+                            PartyType: null,
+                            PhysicalStats: null,
+                            TimeOfDay: null,
+                            TradeSpecies: null,
+                            TurnUpsideDown: null
+                        },
                     }],
                     EvolutionsToShow: []
                 },
@@ -56,22 +58,24 @@ export default createStore({
                 ImageUrl: null,
                 MinLevel: null,
                 Trigger: null,
-                Item: null,
-                Gender: null,
-                HeldItem: null,
-                KnownMove: null,
-                KnownMoveType: null,
-                Location: null,
-                MinAffection: null,
-                MinBeauty: null,
-                MinHappiness: null,
-                NeedsOverworldRain: null,
-                PartySpecies: null,
-                PartyType: null,
-                PhysicalStats: null,
-                TimeOfDay: null,
-                TradeSpecies: null,
-                TurnUpsideDown: null,
+                Modifiers: {
+                    Item: null,
+                    Gender: null,
+                    HeldItem: null,
+                    KnownMove: null,
+                    KnownMoveType: null,
+                    Location: null,
+                    MinAffection: null,
+                    MinBeauty: null,
+                    MinHappiness: null,
+                    NeedsOverworldRain: null,
+                    PartySpecies: null,
+                    PartyType: null,
+                    PhysicalStats: null,
+                    TimeOfDay: null,
+                    TradeSpecies: null,
+                    TurnUpsideDown: null
+                },
             }],
             pokemonNames: [{
                 Name: null,
@@ -86,7 +90,7 @@ export default createStore({
         getCanEvolve: state => state.pokemon.CanEvolve,
         getPkmnSpecies: state => state.pokemon.Species,
         getPkmnImage: state => state.pokemon.ImageUrl,
-        getPkmnEvChain: state => state.pokemon.EvChain
+        getPkmnEvChain: state => state.pokemon.EvChain,
     },
     mutations: { // called via commit('MUTATION_NAME', payload); Should not contain any logic of whether to mutate the data or not
         SET_POKEMON_NAME(state, pokemonName) {
@@ -118,6 +122,12 @@ export default createStore({
         },
         SET_EVOLUTIONS_TO_SHOW(state, pokemonEvolutionsToShow) {
             state.pokemon.EvolutionsToShow = pokemonEvolutionsToShow
+        },
+        SET_POKEMON_TYPES(state, pokemonTypes) {
+            state.pokemon.Types = pokemonTypes
+        },
+        SET_EVOLUTION_TYPES(state, {evolutionTypes, evolutionIndex}) {
+            state.pokemon.NextEvolutions[0][evolutionIndex].Types = evolutionTypes
         }
     },
     actions: { // called via dispatch('actionName', payload)
@@ -132,7 +142,7 @@ export default createStore({
                 P.getPokemonsList(interval).then((response) => {
                     [...response.results].forEach(element => {
                         let p
-                        p = {Name: capitalized((element.name).replace('-', ' ')), Handle: element.name, Id: element.url.split('/')[6]}
+                        p = {Name: capitalized((element.name).replace(/-/g, ' ')), Handle: element.name, Id: element.url.split('/')[6]}
                         state.pokemonNames.push(p);
                         resolve()
                     })
@@ -152,8 +162,9 @@ export default createStore({
                     .then(() => dispatch('cleanEvChain'))
                     .then(() => console.log(state.pokemonEvolutions))
                     .then(() => dispatch('checkPkmnIfEvolve'))
+                    .then(() => dispatch('setTypes', {pokemonName: state.pokemon.Handle, isEvolution: false, evolutionIndex: 0})
                     .then(() => console.log(state.pokemon))
-                    .then(() => resolve())
+                    .then(() => resolve()))
                 })
             })},
         setPokemonSpeciesEvId ({ commit }, pkmnObj) {
@@ -185,28 +196,31 @@ export default createStore({
                             dispatch('checkPkmnEvolutionStage', evData).then((response) =>
                             state.pokemonEvolutions.push({
                                 Name: element.species.name,
-                                Trigger: !element.evolution_details[0].trigger ? null : element.evolution_details[0].trigger.name,
-                                MinLevel: !element ? 1 : element.evolution_details[0].min_level,
-                                Item: !element.evolution_details[0].item ? null : element.evolution_details[0].item.name,
+                                Types: [],
                                 Stage: response,
+                                Trigger: !element.evolution_details[0].trigger ? null : element.evolution_details[0].trigger.name,
                                 ImageUrl: ('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/'+ element.species.url.split('/')[6] +'.png'),
-                                Gender: element.evolution_details[0].gender,
-                                HeldItem: !element.evolution_details[0].held_item ? null : element.evolution_details[0].held_item.name,
-                                KnownMove: !element.evolution_details[0].known_move ? null : element.evolution_details[0].known_move.name,
-                                KnownMoveType: !element.evolution_details[0].known_move_type ? null : element.evolution_details[0].known_move_type.name,
-                                Location: !element.evolution_details[0].location ? null : element.evolution_details[0].location.name,
-                                MinAffection: !element.evolution_details[0].min_affection ? null : element.evolution_details[0].min_affection,
-                                MinBeauty: !element.evolution_details[0].min_beauty ? null : element.evolution_details[0].min_beauty,
-                                MinHappiness: !element.evolution_details[0].min_happiness ? null : element.evolution_details[0].min_happiness,
-                                NeedsOverworldRain: !element.evolution_details[0].needs_overworld_rain ? null : element.evolution_details[0].needs_overworld_rain,
-                                PartySpecies: !element.evolution_details[0].party_species ? null : element.evolution_details[0].party_species,
-                                PartyType: !element.evolution_details[0].party_type ? null : element.evolution_details[0].party_type,
-                                PhysicalStats: !element.evolution_details[0].relative_physical_stats ? null : element.evolution_details[0].relative_physical_stats,
-                                TimeOfDay: !element.evolution_details[0].time_of_day ? null : element.evolution_details[0].time_of_day,
-                                TradeSpecies: !element.evolution_details[0].trade_species ? null : element.evolution_details[0].trade_species,
-                                TurnUpsideDown: !element.evolution_details[0].turn_upside_down ? null : element.evolution_details[0].turn_upside_down,
-                            })
-                            )
+                                Modifiers: {
+                                    MinLevel: !element ? 1 : element.evolution_details[0].min_level,
+                                    Item: !element.evolution_details[0].item ? null : element.evolution_details[0].item.name,
+                                    Gender: element.evolution_details[0].gender,
+                                    HeldItem: !element.evolution_details[0].held_item ? null : element.evolution_details[0].held_item.name,
+                                    KnownMove: !element.evolution_details[0].known_move ? null : element.evolution_details[0].known_move.name,
+                                    KnownMoveType: !element.evolution_details[0].known_move_type ? null : element.evolution_details[0].known_move_type.name,
+                                    Location: !element.evolution_details[0].location ? null : element.evolution_details[0].location.name,
+                                    MinAffection: !element.evolution_details[0].min_affection ? null : element.evolution_details[0].min_affection,
+                                    MinBeauty: !element.evolution_details[0].min_beauty ? null : element.evolution_details[0].min_beauty,
+                                    MinHappiness: !element.evolution_details[0].min_happiness ? null : element.evolution_details[0].min_happiness,
+                                    NeedsOverworldRain: !element.evolution_details[0].needs_overworld_rain ? null : element.evolution_details[0].needs_overworld_rain,
+                                    PartySpecies: !element.evolution_details[0].party_species ? null : element.evolution_details[0].party_species,
+                                    PartyType: !element.evolution_details[0].party_type ? null : element.evolution_details[0].party_type,
+                                    PhysicalStats: !element.evolution_details[0].relative_physical_stats ? null : element.evolution_details[0].relative_physical_stats,
+                                    TimeOfDay: !element.evolution_details[0].time_of_day ? null : element.evolution_details[0].time_of_day,
+                                    TradeSpecies: !element.evolution_details[0].trade_species ? null : element.evolution_details[0].trade_species,
+                                    TurnUpsideDown: !element.evolution_details[0].turn_upside_down ? null : element.evolution_details[0].turn_upside_down
+                                },
+                            }),
+                            dispatch('setTypes', {pokemonName: element.species.name, isEvolution: true, evolutionIndex: evData.evolves_to.indexOf(element)}))
                         })
                     }
 
@@ -238,6 +252,22 @@ export default createStore({
         },
         setEvolutionsToShown ( { commit }, pokemonEvolutionsToShow ) {
             return (commit('SET_EVOLUTIONS_TO_SHOW', pokemonEvolutionsToShow))
+        },
+        setTypes( { commit, state }, {pokemonName, isEvolution, evolutionIndex} ) {
+            return new Promise((resolve) => {
+            P.getPokemonByName(pokemonName).then((response) => {
+                let typesArray = [];
+                [...response.types].forEach(e => {
+                    typesArray.push(e.type.name)
+                    })
+                    if (!isEvolution) {
+                        commit('SET_POKEMON_TYPES', typesArray)
+                    } else
+                    if (state.pokemon.CanEvolve) {
+                        commit('SET_EVOLUTION_TYPES', ({evolutionTypes: typesArray, evolutionIndex: evolutionIndex}))
+                    }
+                })
+                .then(resolve())
+            })
         }
-    }
-})
+}})
