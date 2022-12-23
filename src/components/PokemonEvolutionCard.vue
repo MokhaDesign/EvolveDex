@@ -1,33 +1,38 @@
 <template>
-  <v-col cols="8" xl="8" lg="12" md="7" sm="12" style="display: inline-grid;" class="pt-0">
-  <v-container id="pokemonEvolutionCard" class="pt-0" >
-  <v-row style="justify-content:center" >
-      <v-col style="display: inline-grid;" v-for="item in evolutions[0]" :class="showCard(item) ? '' : 'd-none' " :key="item.Id" cols="4" lg="4" sm="6">
-        <v-container class="py-3 pkmnEvoCard pkmnEvoCardTilt">
-          <v-row class="justify-center">
-              <h1 style="text-transform: capitalize;" v-if="item.Name" v-text="' ' + item.Name" v-on:click="inputChanged(item.Name)"/>
-          </v-row>
+  <v-col class="pt-0" cols="8" lg="12" md="7" sm="12" style="display: inline-grid;" xl="8">
+    <v-container id="pokemonEvolutionCard" class="pt-0">
+      <v-row style="justify-content:center">
+        <v-col v-for="item in evolutions[0]" :key="item.Id" :class="showCard(item) ? '' : 'd-none' "
+               cols="4" lg="4" sm="6" style="display: inline-grid;">
+          <v-container class="py-3 pkmnEvoCard pkmnEvoCardTilt">
             <v-row class="justify-center">
-            <v-divider></v-divider>
-               <!-- Pokemon Image  -->
-            <v-col style="display: flex; justify-content: center; align-items: center;">
-              <v-img style="z-index: 1; justify-content: center;" max-height="237.5" max-width="237.5" alt="Pokemon Artwork" :src="item.ImageUrl" :lazy-src="item.ImageUrl"  crossorigin="anonymous"/>
-            </v-col>
-          </v-row>
+              <h1 v-if="item.Name" style="text-transform: capitalize;" v-on:click="inputChanged(item.Name)"
+                  v-text="' ' + item.Name"/>
+            </v-row>
+            <v-row class="justify-center">
+              <v-divider></v-divider>
+              <!-- Pokemon Image  -->
+              <v-col style="display: flex; justify-content: center; align-items: center;">
+                <v-img :lazy-src="item.ImageUrl" :src="item.ImageUrl" alt="Pokemon Artwork"
+                       crossorigin="anonymous" max-height="237.5" max-width="237.5" style="z-index: 1; justify-content: center;"/>
+              </v-col>
+            </v-row>
             <!-- Pokemon Info  -->
-          <v-row class="justify-center"  style="justify-content: center; margin-bottom: 1.2rem;">
-            <v-divider></v-divider>
-            <h1 class="pokemonTypes" v-for="type in item.Types" v-bind:key="type" v-text="getIcon(type)" style="text-align: start"/>
-            <v-divider></v-divider>
-            <v-col cols="12" md="12" lg="12" style="z-index: 2" class="pt-0 pb-4">
-              <p><span style="text-transform: capitalize" v-text="item.Trigger.replace(/-/g, ' ')" /> <span class="modifiers" v-text="' · ' + this.makeModifierDescription(item)" /></p>
-              <p class="cardType">Evolution</p>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-col>
-  </v-row>
-  </v-container>
+            <v-row class="justify-center" style="justify-content: center; margin-bottom: 1.2rem;">
+              <v-divider></v-divider>
+              <h1 v-for="type in item.Types" v-bind:key="type" class="pokemonTypes" style="text-align: start"
+                  v-text="getIcon(type)"/>
+              <v-divider></v-divider>
+              <v-col class="pt-0 pb-4" cols="12" lg="12" md="12" style="z-index: 2">
+                <p><span style="text-transform: capitalize" v-text="item.Trigger.replace(/-/g, ' ')"/> <span
+                    class="modifiers" v-text="' · ' + this.makeModifierDescription(item)"/></p>
+                <p class="cardType">Evolution</p>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-col>
+      </v-row>
+    </v-container>
   </v-col>
 </template>
 
@@ -44,7 +49,7 @@ export default {
     evolutionsToShown: [Object],
   },
   mixins: ['getIconFromType', 'appendEvolutionModifiers', 'capitaliseFirst'],
-  computed:{
+  computed: {
     ...mapState(['pokemonNames']),
   },
   methods: {
@@ -52,19 +57,22 @@ export default {
     tilt() {
       const cards = document.getElementsByClassName("pkmnEvoCardTilt");
       [...cards].forEach(card => {
-      VanillaTilt.init(card, {
-        max: 5,
-        speed: 500,
-        glare: true,
-        "max-glare": 0.25,
-        gyroscope: true,
-        reverse: true,
-        scale: 1.035,
-        perspective: 1000
-      })});
+        VanillaTilt.init(card, {
+          max: 5,
+          speed: 500,
+          glare: true,
+          "max-glare": 0.25,
+          gyroscope: true,
+          reverse: true,
+          scale: 1.035,
+          perspective: 1000
+        })
+      });
     },
     showCard(e) {
-      return this.evolutionsToShown.some((v) => {return v === this.evolutions[0].indexOf(e)})
+      return this.evolutionsToShown.some((v) => {
+        return v === this.evolutions[0].indexOf(e)
+      })
     },
     getIcon(pkmnType) {
       return getIconFromType(pkmnType)
@@ -74,10 +82,10 @@ export default {
     },
     makeModifierDescription(pkmnModifiers) {
       let string
-          string = (this.appendModifiers(pkmnModifiers)).toString().replace(/,/g, ' ')
+      string = (this.appendModifiers(pkmnModifiers)).toString().replace(/,/g, ' ')
       return capitaliseFirst(string)
     },
-    inputChanged (pkmnName) {
+    inputChanged(pkmnName) {
       return new Promise((resolve) => {
         this.$nextTick(() =>
             document.getElementById('goTop').scrollIntoView({behavior: 'smooth'})
@@ -101,9 +109,9 @@ export default {
   border-radius: 15px;
   backdrop-filter: blur(7px);
   -webkit-backdrop-filter: blur(7px);
-  box-shadow: 20px 20px 50px rgba(0,0,0, 0.15);
-  border-top: 1px solid rgba(255,255,255,0.25);
-  border-left: 1px solid rgba(255,255,255,0.25);
+  box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  border-left: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .cardType {
@@ -118,7 +126,7 @@ export default {
   text-align: center;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.01) !important;
-  text-shadow: -0.5px -0.5px 0.5px rgba(0,0,0, 0.08), 1px 1px 0.5px rgba(255,255,255,0.05);
+  text-shadow: -0.5px -0.5px 0.5px rgba(0, 0, 0, 0.08), 1px 1px 0.5px rgba(255, 255, 255, 0.05);
 }
 
 .pkmnEvoCardWrapper {
@@ -132,9 +140,9 @@ export default {
 .v-divider {
   background: rgba(255, 255, 255, 0.01);
   border-radius: 25px;
-  box-shadow: 1px 1px 1px rgba(0,0,0, 0.05);
-  box-shadow: inset 1px 1px 1px rgba(0,0,0, 0.05);
-  border-top: 1px solid rgba(255,255,255,0.25);
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
   height: 2px;
   max-height: 2px;
 }

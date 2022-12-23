@@ -1,8 +1,8 @@
 <template>
   <v-btn
+      id="backToTop"
       v-scroll="onScroll"
-      @click="onClick"
-     id="backToTop" class="go-top" icon="mdi-arrow-up" color="primary"></v-btn>
+      class="go-top" color="primary" icon="mdi-arrow-up" @click="onClick"></v-btn>
 </template>
 
 <script>
@@ -33,8 +33,8 @@ export default {
   border-radius: 25px;
   backdrop-filter: blur(7px);
   -webkit-backdrop-filter: blur(7px);
-  box-shadow: 20px 20px 50px rgba(0,0,0, 0.15);
-  border: 1px solid rgba(255,255,255,0.25);
+  box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .go-top {

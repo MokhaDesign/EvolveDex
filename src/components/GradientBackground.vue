@@ -1,5 +1,7 @@
 <template>
-<div id="gradientBackground"><PokeballBackground :has-pokemon="hasPokemon"></PokeballBackground></div>
+  <div id="gradientBackground">
+    <PokeballBackground :has-pokemon="hasPokemon"></PokeballBackground>
+  </div>
 </template>
 
 <script>
@@ -20,12 +22,12 @@ export default {
     return {
       hasPokemon: false
     }
-  },  computed:{
+  }, computed: {
     ...mapState(['globals']),
   },
   watch: {
-    pokemon(newPokemon, oldPokemon){
-      if(newPokemon !== oldPokemon) {
+    pokemon(newPokemon, oldPokemon) {
+      if (newPokemon !== oldPokemon) {
         this.updateBackground(newPokemon)
         this.hasPokemon = true
       }
@@ -33,15 +35,15 @@ export default {
   },
   methods: {
     ...mapActions(['setCssColors', 'updateElementsColors']),
-    atComputedCheck () {
+    atComputedCheck() {
       if (this.pokemon) {
         this.updateBackground(this.pokemon)
       }
     },
     // Vibrant
-    updateBackground (newPokemon) {
+    updateBackground(newPokemon) {
       if (this.pokemon) {
-      return new Promise((resolve) => {
+        return new Promise((resolve) => {
           Vibrant.from(newPokemon).getPalette()
               .then((newPalette) => {
                 let darkBG = pSBC(-0.5, newPalette.DarkMuted.hex)
@@ -57,12 +59,17 @@ export default {
                       darkBgColor: darkBG,
                       lightBgColor: lightBG,
                       appBarColor: appBG,
-                      navBarColor: navBG})
+                      navBarColor: navBG
+                    })
               })
-              .then(() => { this.updateElementsColors((['gradientBackground', 'pokemonCard', 'pokemonEvolutionCard', 'appBar'])) })
-              .then(() => { resolve() })
-      })
-    }
+              .then(() => {
+                this.updateElementsColors((['gradientBackground', 'pokemonCard', 'pokemonEvolutionCard', 'appBar']))
+              })
+              .then(() => {
+                resolve()
+              })
+        })
+      }
     }
   },
   mounted() {
@@ -114,6 +121,7 @@ export default {
 #pokemonCard * > h1 {
   color: var(--titleTextColor);
 }
+
 #pokemonCard * > p {
   color: var(--bodyTextColor);
 }

@@ -1,6 +1,6 @@
 import {capitalized} from "@/composables/utils";
 
-export function getIconFromType (pkmnType) {
+export function getIconFromType(pkmnType) {
     switch (pkmnType) {
         case 'normal' :
             return 'C'
@@ -52,67 +52,67 @@ export function getIconFromType (pkmnType) {
 export function appendEvolutionModifier(pokemonEvolution) {
     let validModifiersKeys = [];
     [...Object.keys(pokemonEvolution.Modifiers)].forEach((m) => {
-        if(pokemonEvolution.Modifiers[m] !== null) {
-            validModifiersKeys.push(m)
-        }
+            if (pokemonEvolution.Modifiers[m] !== null) {
+                validModifiersKeys.push(m)
+            }
         }
     )
 
     let validModifiersValues = [];
     [...validModifiersKeys].forEach((m) => {
-            validModifiersValues.push(pokemonEvolution.Modifiers[m])
+        validModifiersValues.push(pokemonEvolution.Modifiers[m])
     })
 
     let validModifiersStrings = [];
     [...validModifiersKeys].forEach((m, index) => {
-    switch(m) {
-        case 'MinLevel':
-            validModifiersStrings.push(('from Level ' + validModifiersValues[index] + ' ').toString())
-            break
-        case 'Gender':
-            switch(pokemonEvolution.Modifiers.Gender) {
-                case 1:
-                    validModifiersStrings.push(('if Female ').toString())
-                    break
-                case 2:
-                    validModifiersStrings.push(('if Male ').toString())
-                    break
-            }
-            break
-        case 'HeldItem':
-            validModifiersStrings.push(('while holding ' + capitalized(validModifiersValues[index]).replace(/-/g, ' ') + ' ').toString())
-            break
-        case 'Item':
-            validModifiersStrings.push(('by using a ' + capitalized(validModifiersValues[index].replace(/-/g, ' '))).toString())
-            break
-        case 'KnownMove':
-            validModifiersStrings.push(('if it knows ' + capitalized(validModifiersValues[index]).replace(/-/g, ' ') + ' ').toString())
-            break
-        case 'KnownMoveType':
-            validModifiersStrings.push(('if it knows a ' + capitalized(validModifiersValues[index]) + ' move ').toString())
-            break
-        case 'MinAffection':
-            validModifiersStrings.push(('with ' + validModifiersValues[index] + ' Affection or higher ').toString())
-            break
-        case 'MinHappiness':
-            validModifiersStrings.push(('with ' + validModifiersValues[index] + ' Happiness or higher ').toString())
-            break
-        case 'MinBeauty':
-            validModifiersStrings.push(('with ' + validModifiersValues[index] + ' Beauty or higher ').toString())
-            break
-        case 'Location':
-            validModifiersStrings.push(('at ' + capitalized(validModifiersValues[index].replace(/-/g, ' ')) + ' ').toString())
-            break
-        case 'NeedsOverworldRain':
-            validModifiersStrings.push(' when raining')
-            break
-        case 'PartySpecies':
-            validModifiersStrings.push(('with a ' + capitalized(validModifiersValues[index].name) + ' in the party ').toString())
-            break
-        case 'PartyType':
-            validModifiersStrings.push(('with a ' + capitalized(validModifiersValues[index]) + ' Pokémon in the party ').toString())
-            break
-        case 'PhysicalStats':
+        switch (m) {
+            case 'MinLevel':
+                validModifiersStrings.push(('from Level ' + validModifiersValues[index] + ' ').toString())
+                break
+            case 'Gender':
+                switch (pokemonEvolution.Modifiers.Gender) {
+                    case 1:
+                        validModifiersStrings.push(('if Female ').toString())
+                        break
+                    case 2:
+                        validModifiersStrings.push(('if Male ').toString())
+                        break
+                }
+                break
+            case 'HeldItem':
+                validModifiersStrings.push(('while holding ' + capitalized(validModifiersValues[index]).replace(/-/g, ' ') + ' ').toString())
+                break
+            case 'Item':
+                validModifiersStrings.push(('by using a ' + capitalized(validModifiersValues[index].replace(/-/g, ' '))).toString())
+                break
+            case 'KnownMove':
+                validModifiersStrings.push(('if it knows ' + capitalized(validModifiersValues[index]).replace(/-/g, ' ') + ' ').toString())
+                break
+            case 'KnownMoveType':
+                validModifiersStrings.push(('if it knows a ' + capitalized(validModifiersValues[index]) + ' move ').toString())
+                break
+            case 'MinAffection':
+                validModifiersStrings.push(('with ' + validModifiersValues[index] + ' Affection or higher ').toString())
+                break
+            case 'MinHappiness':
+                validModifiersStrings.push(('with ' + validModifiersValues[index] + ' Happiness or higher ').toString())
+                break
+            case 'MinBeauty':
+                validModifiersStrings.push(('with ' + validModifiersValues[index] + ' Beauty or higher ').toString())
+                break
+            case 'Location':
+                validModifiersStrings.push(('at ' + capitalized(validModifiersValues[index].replace(/-/g, ' ')) + ' ').toString())
+                break
+            case 'NeedsOverworldRain':
+                validModifiersStrings.push(' when raining')
+                break
+            case 'PartySpecies':
+                validModifiersStrings.push(('with a ' + capitalized(validModifiersValues[index].name) + ' in the party ').toString())
+                break
+            case 'PartyType':
+                validModifiersStrings.push(('with a ' + capitalized(validModifiersValues[index]) + ' Pokémon in the party ').toString())
+                break
+            case 'PhysicalStats':
                 switch (pokemonEvolution.Modifiers.PhysicalStats) {
                     case 1:
                         validModifiersStrings.push('if Attack > Defense')
@@ -123,24 +123,24 @@ export function appendEvolutionModifier(pokemonEvolution) {
                     default:
                         validModifiersStrings.push('if Attack and Defense are equal')
                         break
-            }
-            break
-        case 'TimeOfDay':
-            validModifiersStrings.push(('at ' + capitalized(validModifiersValues[index]) + ' Time ').toString())
-            break
-        case 'TradeSpecies':
-            validModifiersStrings.push(('by trading with ' + capitalized(validModifiersValues[index].name) + ' ').toString())
-            break
-        case 'TurnUpsideDown':
-            validModifiersStrings.push('by turning the device upside down ')
-            break
-    }
+                }
+                break
+            case 'TimeOfDay':
+                validModifiersStrings.push(('at ' + capitalized(validModifiersValues[index]) + ' Time ').toString())
+                break
+            case 'TradeSpecies':
+                validModifiersStrings.push(('by trading with ' + capitalized(validModifiersValues[index].name) + ' ').toString())
+                break
+            case 'TurnUpsideDown':
+                validModifiersStrings.push('by turning the device upside down ')
+                break
+        }
     })
 
     return validModifiersStrings
 }
 
-export function getTriggerText (pokemonEvolution) {
+export function getTriggerText(pokemonEvolution) {
     switch (pokemonEvolution.Trigger) {
         case 'level-up':
             return ('From level ' + pokemonEvolution.MinLevel)

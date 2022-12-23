@@ -1,42 +1,45 @@
-
 <template>
   <div id="goTop"></div>
-<v-app>
-  <v-system-bar id="appBar">
-    <p v-text="pokemon.Name ? pokemon.Name : 'EvoDex'" />
-    <v-spacer></v-spacer>
-    <v-icon :icon="pokemon.CanEvolve ? 'mdi-checkbox-marked-circle-outline' : 'mdi-checkbox-blank-circle-outline'" class="ml-2"></v-icon>
-    <v-icon :icon="pokemon.EvolutionsToShow[0] === null || pokemon.EvolutionsToShow.length === 0 ? 'mdi-eye-off' : 'mdi-eye'"  class="ml-2"></v-icon>
-    <v-icon icon="mdi-graph-outline" class="ml-2"></v-icon>
+  <v-app>
+    <v-system-bar id="appBar">
+      <p v-text="pokemon.Name ? pokemon.Name : 'EvoDex'"/>
+      <v-spacer></v-spacer>
+      <v-icon :icon="pokemon.CanEvolve ? 'mdi-checkbox-marked-circle-outline' : 'mdi-checkbox-blank-circle-outline'"
+              class="ml-2"></v-icon>
+      <v-icon
+          :icon="pokemon.EvolutionsToShow[0] === null || pokemon.EvolutionsToShow.length === 0 ? 'mdi-eye-off' : 'mdi-eye'"
+          class="ml-2"></v-icon>
+      <v-icon class="ml-2" icon="mdi-graph-outline"></v-icon>
 
-  </v-system-bar>
+    </v-system-bar>
 
 
-  <GradientBackground :pokemon="pokemon.ImageUrl"></GradientBackground>
-  <SearchBar :pkmn-names-db="pokemonNames"></SearchBar>
+    <GradientBackground :pokemon="pokemon.ImageUrl"></GradientBackground>
+    <SearchBar :pkmn-names-db="pokemonNames"></SearchBar>
 
-  <v-container class="flex-column align-center" style="display: flex; min-height: 100vh;">
+    <v-container class="flex-column align-center" style="display: flex; min-height: 100vh;">
 
-  <v-container v-if="globals.showCards" class="flex-grow-1 d-flex flex-column justify-center">
+      <v-container v-if="globals.showCards" class="flex-grow-1 d-flex flex-column justify-center">
 
-  <v-container class="cardWrapper fill-height">
-    <v-row>
-      <v-col>
-    <PokemonCard :pokemon="pokemon"></PokemonCard>
-      </v-col>
-    </v-row>
-  </v-container>
+        <v-container class="cardWrapper fill-height">
+          <v-row>
+            <v-col>
+              <PokemonCard :pokemon="pokemon"></PokemonCard>
+            </v-col>
+          </v-row>
+        </v-container>
 
-  <v-container class="fill-height">
-    <PokemonEvolutionCard v-if="pokemon.NextEvolutions[0].length > 0" :evolutions="pokemon.NextEvolutions" :evolutions-to-shown="pokemon.EvolutionsToShow"></PokemonEvolutionCard>
-  </v-container>
+        <v-container class="fill-height">
+          <PokemonEvolutionCard v-if="pokemon.NextEvolutions[0].length > 0" :evolutions="pokemon.NextEvolutions"
+                                :evolutions-to-shown="pokemon.EvolutionsToShow"></PokemonEvolutionCard>
+        </v-container>
 
-  </v-container>
+      </v-container>
 
-</v-container>
+    </v-container>
 
-<BackToTop></BackToTop>
-</v-app>
+    <BackToTop></BackToTop>
+  </v-app>
 
 </template>
 
@@ -44,9 +47,9 @@
 import PokemonCard from "@/components/PokemonCard";
 import GradientBackground from "@/components/GradientBackground";
 import PokemonEvolutionCard from "@/components/PokemonEvolutionCard";
-import { mapActions, mapState} from "vuex";
+import {mapActions, mapState} from "vuex";
 import BackToTop from "@/components/BackToTop";
-import { useHead } from '@unhead/vue'
+import {useHead} from '@unhead/vue'
 import SearchBar from "@/components/SearchBar";
 
 
@@ -59,12 +62,11 @@ export default {
     PokemonCard,
     GradientBackground
   },
-  watch: {
-  },
+  watch: {},
   methods: {
     ...mapActions(['fetchPokemonNames'])
   },
-  computed:{
+  computed: {
     ...mapState(['pokemon', 'pokemonNames', 'globals']),
   },
   created() {
@@ -87,12 +89,11 @@ export default {
 
 <style>
 
-*
-{
+* {
   -webkit-transition: all 1s ease-in-out;
-  -moz-transition:  all 1s ease-in-out;
+  -moz-transition: all 1s ease-in-out;
   -ms-transition: all 1s ease-in-out;
-  -o-transition:  all 1s ease-in-out;
+  -o-transition: all 1s ease-in-out;
   transition: all 1s ease-in-out;
 }
 
@@ -104,8 +105,8 @@ body::-webkit-scrollbar {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 body {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 #app {
@@ -125,10 +126,10 @@ body {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 25px;
   -webkit-backdrop-filter: blur(7px);
-  border: 0.1px solid rgba(255,255,255,0.25);
+  border: 0.1px solid rgba(255, 255, 255, 0.25);
 }
 
-.v-menu .v-overlay__content{
+.v-menu .v-overlay__content {
   border-radius: 25px;
 }
 
@@ -150,14 +151,14 @@ body {
   border-radius: 25px !important;
   -webkit-backdrop-filter: blur(7px);
   backdrop-filter: blur(7px);
-  border: 1px solid rgba(255,255,255,0.25);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   color: #FFF;
   transition: all 0s ease-in-out;
 }
 
 .v-autocomplete__mask {
   background-color: transparent;
-  background: linear-gradient(180deg,rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
 }
 
 .v-list--border {
@@ -167,6 +168,7 @@ body {
 .v-progress-linear {
   height: 50px;
 }
+
 .v-field__outline {
   display: none !important;
 }

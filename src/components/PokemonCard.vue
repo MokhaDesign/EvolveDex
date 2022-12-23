@@ -1,22 +1,24 @@
 <template>
   <!--  Pokemon Card  -->
-  <v-container class="d-flex fill-height mt-12" id="pokemonCard">
+  <v-container id="pokemonCard" class="d-flex fill-height mt-12">
     <v-row class="justify-center">
-      <v-col cols="8" xl="6" lg="10" md="12" sm="10">
-        <v-card class="py-3 mainCard" id="pokemonCardTilt">
-          <v-row class="justify-center"  style="justify-content: center">
-             <!-- Pokemon Image  -->
-            <v-col cols="10" md="4" lg="3" style="display: flex; justify-content: center; align-items: center;">
-              <v-img style="z-index: 1; justify-content: center;" max-height="475" max-width="475" alt="Pokemon Artwork" :src="pokemon.ImageUrl" :lazy-src="pokemon.ImageUrl" crossorigin="anonymous"/>
+      <v-col cols="8" lg="10" md="12" sm="10" xl="6">
+        <v-card id="pokemonCardTilt" class="py-3 mainCard">
+          <v-row class="justify-center" style="justify-content: center">
+            <!-- Pokemon Image  -->
+            <v-col cols="10" lg="3" md="4" style="display: flex; justify-content: center; align-items: center;">
+              <v-img :lazy-src="pokemon.ImageUrl" :src="pokemon.ImageUrl" alt="Pokemon Artwork" crossorigin="anonymous"
+                     max-height="475" max-width="475" style="z-index: 1; justify-content: center;"/>
             </v-col>
-          <!-- Pokemon Info  -->
-            <v-col cols="12" md="8" lg="8" style="z-index: 2">
-              <MainCard :pkmn-name="pokemon.Name" :pkmn-can-evolve="pokemon.CanEvolve" :pkmn-ev-length="pokemon.NextEvolutions[0].length" :pkmn-types="pokemon.Types"></MainCard>
+            <!-- Pokemon Info  -->
+            <v-col cols="12" lg="8" md="8" style="z-index: 2">
+              <MainCard :pkmn-can-evolve="pokemon.CanEvolve" :pkmn-ev-length="pokemon.NextEvolutions[0].length"
+                        :pkmn-name="pokemon.Name" :pkmn-types="pokemon.Types"></MainCard>
               <div v-if="pokemon.CanEvolve">
                 <EvolutionList :pkmn-ev-chain-list="pokemon.NextEvolutions"></EvolutionList>
               </div>
               <p class="cardType">Pokémon</p>
-              <p class="cardTypeIcon" v-text="getIcon(pokemon.Types)" />
+              <p class="cardTypeIcon" v-text="getIcon(pokemon.Types)"/>
             </v-col>
           </v-row>
         </v-card>
@@ -72,9 +74,9 @@ export default {
   border-radius: 15px;
   backdrop-filter: blur(7px);
   -webkit-backdrop-filter: blur(7px);
-  box-shadow: 20px 20px 50px rgba(0,0,0, 0.15);
-  border-top: 1px solid rgba(255,255,255,0.25);
-  border-left: 1px solid rgba(255,255,255,0.25);
+  box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  border-left: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .cardType {
@@ -89,7 +91,7 @@ export default {
   text-align: end;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.01) !important;
-  text-shadow: -0.5px -0.5px 0.5px rgba(0,0,0, 0.08), 1px 1px 0.5px rgba(255,255,255,0.05);
+  text-shadow: -0.5px -0.5px 0.5px rgba(0, 0, 0, 0.08), 1px 1px 0.5px rgba(255, 255, 255, 0.05);
 }
 
 #pokemonCardTilt {
