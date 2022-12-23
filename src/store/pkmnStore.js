@@ -14,6 +14,20 @@ const P = new Pokedex.Pokedex(options)
 export default createStore({
     state() { // variables
         return {
+            globals: {
+                showCards: false,
+                showAllEvo: false,
+                css:
+                    {
+                        titleTextColor: '#FFF',
+                        bodyTextColor: '#FFF',
+                        darkBgColor: '#2e251c',
+                        lightBgColor: '#9d9b99',
+                        appBarColor: '#eeeeee',
+                        navBarColor: '#eeeeee',
+                    }
+
+            },
             pokemon:
                 {
                     Name: null,
@@ -128,6 +142,17 @@ export default createStore({
         },
         SET_EVOLUTION_TYPES(state, {evolutionTypes, evolutionIndex}) {
             state.pokemon.NextEvolutions[0][evolutionIndex].Types = evolutionTypes
+        },
+        SET_GLOBAL_SHOWCARDS(state, showCards) {
+            state.globals.showCards = showCards
+        },
+        SET_GLOBAL_COLORS(state, {titleTextColor, bodyTextColor, darkBgColor, lightBgColor, appBarColor, navBarColor}) {
+            state.globals.css.titleTextColor = titleTextColor
+            state.globals.css.bodyTextColor = bodyTextColor
+            state.globals.css.darkBgColor = darkBgColor
+            state.globals.css.lightBgColor = lightBgColor
+            state.globals.css.appBarColor = appBarColor
+            state.globals.css.navBarColor = navBarColor
         }
     },
     actions: { // called via dispatch('actionName', payload)
@@ -268,6 +293,25 @@ export default createStore({
                     }
                 })
                 .then(resolve())
+            })
+        },
+        setShowCards ( { commit }, showCards) {
+            commit('SET_GLOBAL_SHOWCARDS', showCards)
+        },
+        setCssColors ({ commit }, {titleTextColor, bodyTextColor, darkBgColor, lightBgColor, appBarColor, navBarColor}) {
+            commit('SET_GLOBAL_COLORS', ({titleTextColor: titleTextColor, bodyTextColor: bodyTextColor, darkBgColor: darkBgColor, lightBgColor: lightBgColor, appBarColor: appBarColor, navBarColor: navBarColor}))
+        },
+        updateElementsColors ( { state }, ids) {
+            [...ids].forEach(id => {
+                let el = document.getElementById(id)
+                if (el) {
+                el.style.setProperty('--titleTextColor', state.globals.css.titleTextColor)
+                el.style.setProperty('--bodyTextColor', state.globals.css.bodyTextColor)
+                el.style.setProperty('--darkBgColor', state.globals.css.darkBgColor)
+                el.style.setProperty('--lightBgColor', state.globals.css.lightBgColor)
+                el.style.setProperty('--navBarColor', state.globals.css.navBarColor)
+                el.style.setProperty('--appBarColor', state.globals.css.appBarColor)
+                }
             })
         }
 }})

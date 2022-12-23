@@ -1,8 +1,8 @@
 <template>
   <!--  Pokemon Card  -->
-  <v-container class="d-flex mb-6 fill-height" id="pokemonCard">
+  <v-container class="d-flex fill-height mt-12" id="pokemonCard">
     <v-row class="justify-center">
-      <v-col cols="8" lg="6" md="10" sm="10">
+      <v-col cols="8" xl="6" lg="10" md="12" sm="10">
         <v-card class="py-3 mainCard" id="pokemonCardTilt">
           <v-row class="justify-center"  style="justify-content: center">
              <!-- Pokemon Image  -->

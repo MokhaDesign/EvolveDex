@@ -1,11 +1,11 @@
 <template>
-  <v-col cols="6" md="8" sm="12" style="display: inline-grid;" class="pt-0">
+  <v-col cols="8" xl="8" lg="12" md="7" sm="12" style="display: inline-grid;" class="pt-0">
   <v-container id="pokemonEvolutionCard" class="pt-0" >
   <v-row style="justify-content:center" >
       <v-col style="display: inline-grid;" v-for="item in evolutions[0]" :class="showCard(item) ? '' : 'd-none' " :key="item.Id" cols="4" lg="4" sm="6">
         <v-container class="py-3 pkmnEvoCard pkmnEvoCardTilt">
           <v-row class="justify-center">
-              <h1 style="text-transform: capitalize;" v-if="item.Name" v-text="' ' + item.Name" />
+              <h1 style="text-transform: capitalize;" v-if="item.Name" v-text="' ' + item.Name" v-on:click="inputChanged(item.Name)"/>
           </v-row>
             <v-row class="justify-center">
             <v-divider></v-divider>
@@ -19,8 +19,9 @@
             <v-divider></v-divider>
             <h1 class="pokemonTypes" v-for="type in item.Types" v-bind:key="type" v-text="getIcon(type)" style="text-align: start"/>
             <v-divider></v-divider>
-            <v-col cols="12" md="12" lg="12" style="z-index: 2" class="pt-0">
+            <v-col cols="12" md="12" lg="12" style="z-index: 2" class="pt-0 pb-4">
               <p><span style="text-transform: capitalize" v-text="item.Trigger.replace(/-/g, ' ')" /> <span class="modifiers" v-text="' · ' + this.makeModifierDescription(item)" /></p>
+              <p class="cardType">Evolution</p>
             </v-col>
           </v-row>
         </v-container>
@@ -34,6 +35,7 @@
 import VanillaTilt from "vanilla-tilt";
 import {getIconFromType, appendEvolutionModifier} from "@/composables/pkmnMixin";
 import {capitaliseFirst} from "@/composables/utils"
+import {mapState, mapActions} from "vuex";
 
 export default {
   name: "PokemonEvolutionCard",
@@ -42,7 +44,11 @@ export default {
     evolutionsToShown: [Object],
   },
   mixins: ['getIconFromType', 'appendEvolutionModifiers', 'capitaliseFirst'],
+  computed:{
+    ...mapState(['pokemonNames']),
+  },
   methods: {
+    ...mapActions(['setPokemon', 'setShowCards']),
     tilt() {
       const cards = document.getElementsByClassName("pkmnEvoCardTilt");
       [...cards].forEach(card => {
@@ -70,7 +76,17 @@ export default {
       let string
           string = (this.appendModifiers(pkmnModifiers)).toString().replace(/,/g, ' ')
       return capitaliseFirst(string)
-    }
+    },
+    inputChanged (pkmnName) {
+      return new Promise((resolve) => {
+        this.$nextTick(() =>
+            document.getElementById('goTop').scrollIntoView({behavior: 'smooth'})
+        )
+        this.setPokemon((this.pokemonNames.filter(e => e.Handle === pkmnName))[0]).then(() => {
+          resolve()
+        })
+      })
+    },
   },
   mounted() {
     this.tilt()
@@ -90,8 +106,8 @@ export default {
   border-left: 1px solid rgba(255,255,255,0.25);
 }
 
-.pkmnEvoCard:after {
-  content: 'evolution';
+.cardType {
+  pointer-events: none;
   font-family: Montserrat, Railway, Arial, sans-serif;
   position: absolute;
   bottom: 0;
@@ -101,8 +117,8 @@ export default {
   text-transform: uppercase;
   text-align: center;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.01);
-  text-shadow: -0.5px -0.5px 0.5px rgba(0,0,0, 0.05), 1px 1px 0.5px rgba(255,255,255,0.05);
+  color: rgba(255, 255, 255, 0.01) !important;
+  text-shadow: -0.5px -0.5px 0.5px rgba(0,0,0, 0.08), 1px 1px 0.5px rgba(255,255,255,0.05);
 }
 
 .pkmnEvoCardWrapper {
@@ -125,6 +141,7 @@ export default {
 
 h1 {
   text-align: start;
+  cursor: pointer;
 }
 
 @media only screen and (max-width: 960px) {
@@ -138,19 +155,14 @@ p {
   font-family: Montserrat, Railway, Arial, sans-serif;
 }
 
-@media only screen and (max-width: 1904px) {
-  .pkmnEvoCard:after {
-    font-size: 0.6rem;
-  }
-}
-
 @media only screen and (max-width: 960px) {
-  .pkmnEvoCard:after {
+  .cardType {
     display: none;
   }
 }
 
 .pokemonTypes {
+  pointer-events: none;
   font-family: Essentiarum;
   font-weight: normal;
   font-display: block;

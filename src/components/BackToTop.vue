@@ -18,7 +18,7 @@ export default {
     },
     onClick() {
       this.$nextTick(() =>
-          document.getElementById('searchBar').scrollIntoView({behavior: 'smooth'})
+          document.getElementById('goTop').scrollIntoView({behavior: 'smooth'})
       );
     },
   }
@@ -30,12 +30,11 @@ export default {
 .v-btn {
   background-color: rgba(255, 255, 255, 0.1) !important;
   opacity: 0;
-  border-radius: 15px;
+  border-radius: 25px;
   backdrop-filter: blur(7px);
   -webkit-backdrop-filter: blur(7px);
   box-shadow: 20px 20px 50px rgba(0,0,0, 0.15);
-  border-top: 1px solid rgba(255,255,255,0.25);
-  border-left: 1px solid rgba(255,255,255,0.25);
+  border: 1px solid rgba(255,255,255,0.25);
 }
 
 .go-top {

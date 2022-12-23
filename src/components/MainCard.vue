@@ -75,6 +75,7 @@ p {
 }
 
 .pokemonTypes {
+  pointer-events: none;
   font-family: Essentiarum;
   font-weight: normal;
   font-display: block;

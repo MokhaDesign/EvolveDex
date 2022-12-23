@@ -6,6 +6,7 @@
 import * as Vibrant from 'node-vibrant'
 import {pSBC} from "@/composables/utils";
 import PokeballBackground from "@/components/PokeballBackground";
+import {mapActions, mapState} from "vuex";
 
 export default {
   name: "GradientBackground",
@@ -19,20 +20,24 @@ export default {
     return {
       hasPokemon: false
     }
+  },  computed:{
+    ...mapState(['globals']),
   },
   watch: {
-    pokemon(newPokemon){
-      this.updateBackground(newPokemon)
-      this.hasPokemon = true
+    pokemon(newPokemon, oldPokemon){
+      if(newPokemon !== oldPokemon) {
+        this.updateBackground(newPokemon)
+        this.hasPokemon = true
+      }
     },
   },
   methods: {
+    ...mapActions(['setCssColors', 'updateElementsColors']),
     atComputedCheck () {
       if (this.pokemon) {
         this.updateBackground(this.pokemon)
       }
     },
-
     // Vibrant
     updateBackground (newPokemon) {
       if (this.pokemon) {
@@ -41,20 +46,21 @@ export default {
               .then((newPalette) => {
                 let darkBG = pSBC(-0.5, newPalette.DarkMuted.hex)
                 let lightBG = pSBC(-0.5, newPalette.LightMuted.hex)
+                let appBG = pSBC(-0.2, newPalette.LightMuted.hex)
+                let navBG = newPalette.LightMuted.hex
                 let titleTextColor = newPalette.DarkMuted.titleTextColor
                 let bodyTextColor = newPalette.DarkMuted.bodyTextColor
-                let g = document.getElementById('gradientBackground')
-                let r = document.getElementById('pokemonCard')
-                let c = document.getElementById('pokemonEvolutionCard')
-                g.style.setProperty('--darkBgColor', darkBG)
-                g.style.setProperty('--lightBgColor', lightBG)
-                r.style.setProperty('--titleTextColor', titleTextColor)
-                r.style.setProperty('--bodyTextColor', bodyTextColor)
-                if (c) {
-                  c.style.setProperty('--titleTextColor', titleTextColor)
-                  c.style.setProperty('--bodyTextColor', bodyTextColor)
-                }
-              }).then(() => { resolve() })
+                this.setCssColors(
+                    {
+                      titleTextColor: titleTextColor,
+                      bodyTextColor: bodyTextColor,
+                      darkBgColor: darkBG,
+                      lightBgColor: lightBG,
+                      appBarColor: appBG,
+                      navBarColor: navBG})
+              })
+              .then(() => { this.updateElementsColors((['gradientBackground', 'pokemonCard', 'pokemonEvolutionCard', 'appBar'])) })
+              .then(() => { resolve() })
       })
     }
     }
@@ -77,9 +83,19 @@ export default {
   --bodyTextColor: #FFF;
 }
 
+#appBar {
+  --appBarColor: #eeeeee;
+  background-color: var(--appBarColor);
+}
+
+.v-system-bar {
+  box-shadow: 0px 0px 0px 0px #000;
+  transition: box-shadow .33s ease-in-out;
+}
+
 #gradientBackground {
-  --darkBgColor: #333;
-  --lightBgColor: #1d1b17;
+  --darkBgColor: #2e251c;
+  --lightBgColor: #9d9b99;
 
   width: 200%;
   height: 200%;
@@ -105,6 +121,7 @@ export default {
 #pokemonEvolutionCard * > h1 {
   color: var(--titleTextColor);
 }
+
 #pokemonEvolutionCard * > p {
   color: var(--bodyTextColor);
 }

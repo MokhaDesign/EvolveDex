@@ -9,7 +9,7 @@
   </v-btn-toggle>
   <v-divider></v-divider>
   <v-btn-toggle selected-class="evoBtnSelected" borderless multiple class="pt-4">
-      <v-btn id="showAllBtn" :class="pkmnEvChainList[0].length >= 2 ? '' : 'd-none'" block rounded="pill" style="text-transform: capitalize" variant="plain" @click="selectAll()"><p>Toggle all</p></v-btn>
+      <v-container v-if="pkmnEvChainList[0].length >= 2" id="showAllBtn" class="v-btn v-btn--block v-btn--flat  rounded-pill v-btn--size-default v-btn--variant-plain" style="text-transform: capitalize" :class="showAll ? 'evoBtnSelected' : ''"  v-on:click="selectAll()"><p>Toggle All</p></v-container>
       <v-btn block rounded="pill" style="text-transform: capitalize" variant="plain"><p>Show evolution tree</p></v-btn>
   </v-btn-toggle>
     </v-col>
@@ -39,25 +39,13 @@ export default {
     evoSelected(newValue, oldValue) {
       const allBtnSwitch = newValue.length % this.pkmnEvChainList[0].length;
 
-      const clickBtn = () => {
-        this.fromBtn = false
-        document.getElementById('showAllBtn').click()
-      }
-
       switch (allBtnSwitch) {
         case 0:
-          newValue.length === this.pkmnEvChainList[0].length ? clickBtn() : ''
-          this.showAll = true
-          this.fromBtn = true
+          newValue.length === this.pkmnEvChainList[0].length ? (this.showAll = true) : ''
               break
-        case newValue.length:
-          oldValue.length === this.pkmnEvChainList[0].length ? clickBtn() : ''
-          this.showAll = false
-          this.fromBtn = true
+        case (newValue.length):
+          oldValue.length === this.pkmnEvChainList[0].length ? (this.showAll = false) : ''
               break
-        // default:
-        //   this.fromBtn = true
-        //   break
       }
     }
   },
@@ -67,8 +55,6 @@ export default {
       this.setEvolutionsToShown(this.evoSelected)
     },
     selectAll() {
-      if(!this.fromBtn) { return }
-      else {
         if (!this.showAll) {
           [...this.pkmnEvChainList[0]].forEach((e, i) => (
               this.evoSelected.push(i),
@@ -76,22 +62,19 @@ export default {
                   this.showAll = true
           ))
         } else {
-          this.evoSelected = [null],
-              this.setEvolutionsToShown(this.evoSelected),
-              this.showAll = false
-        }}
+          this.evoSelected = [null]
+          this.setEvolutionsToShown(this.evoSelected)
+          this.showAll = false
+        }
       },
     getIcon(pkmnType) {
       return getIconFromType(pkmnType)
     },
   },
-  beforeUpdate() {
-    this.evoSelected = []
+  updated() {
+    this.evoSelected = [null]
     this.setEvolutionsToShown(this.evoSelected)
     this.showAll = false
-    this.fromBtn = true
-  },
-  updated() {
   }
 }
 </script>
@@ -114,6 +97,7 @@ export default {
 }
 
 .v-btn {
+  cursor: pointer;
   margin: 0.2rem;
   text-transform: none;
   letter-spacing: normal;

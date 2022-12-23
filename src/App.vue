@@ -1,34 +1,23 @@
-<template>
-  <GradientBackground :pokemon="pokemon.ImageUrl"></GradientBackground>
-<v-container class="flex-column align-center" style="display: flex; min-height: 100vh;">
-  <v-container class="flex-shrink-1">
-    <v-row>
-      <v-col id="searchBar" class=".searchBar" cols="12" sm="6" md="12">
-  <!--  Search Bar  -->
-    <v-autocomplete
-        flat solo
-      id="pkmnSearchBar"
-      label="Search Pokémon"
-      v-model="select"
-      v-model:search="search"
-      :loading="showProgressBar"
-      v-on:update:modelValue="inputChanged"
-      :items="items"
-      item-text="Name"
-      item-value="Handle"
-      :menu-props="{ maxHeight: 500 }"
-      allow-overflow="false"
-      return-object
-      hide-details
-      hide-selected
-      hide-no-data
-    >
-    </v-autocomplete>
-      </v-col>
-    </v-row>
-  </v-container>
 
-  <v-container v-if="showCards" class="flex-grow-1 d-flex flex-column justify-center">
+<template>
+  <div id="goTop"></div>
+<v-app>
+  <v-system-bar id="appBar">
+    <p v-text="pokemon.Name ? pokemon.Name : 'EvoDex'" />
+    <v-spacer></v-spacer>
+    <v-icon :icon="pokemon.CanEvolve ? 'mdi-checkbox-marked-circle-outline' : 'mdi-checkbox-blank-circle-outline'" class="ml-2"></v-icon>
+    <v-icon :icon="pokemon.EvolutionsToShow[0] === null || pokemon.EvolutionsToShow.length === 0 ? 'mdi-eye-off' : 'mdi-eye'"  class="ml-2"></v-icon>
+    <v-icon icon="mdi-graph-outline" class="ml-2"></v-icon>
+
+  </v-system-bar>
+
+
+  <GradientBackground :pokemon="pokemon.ImageUrl"></GradientBackground>
+  <SearchBar :pkmn-names-db="pokemonNames"></SearchBar>
+
+  <v-container class="flex-column align-center" style="display: flex; min-height: 100vh;">
+
+  <v-container v-if="globals.showCards" class="flex-grow-1 d-flex flex-column justify-center">
 
   <v-container class="cardWrapper fill-height">
     <v-row>
@@ -47,6 +36,7 @@
 </v-container>
 
 <BackToTop></BackToTop>
+</v-app>
 
 </template>
 
@@ -54,60 +44,28 @@
 import PokemonCard from "@/components/PokemonCard";
 import GradientBackground from "@/components/GradientBackground";
 import PokemonEvolutionCard from "@/components/PokemonEvolutionCard";
-import {mapActions, mapGetters, mapState} from "vuex";
+import { mapActions, mapState} from "vuex";
 import BackToTop from "@/components/BackToTop";
 import { useHead } from '@unhead/vue'
+import SearchBar from "@/components/SearchBar";
 
 
 export default {
   name: 'App',
   components: {
+    SearchBar,
     BackToTop,
     PokemonEvolutionCard,
     PokemonCard,
     GradientBackground
   },
-  data () { return {
-    search: null,
-    select: null,
-    isLoading: false,
-    items: [],
-    showCards: false,
-    showProgressBar: false}
-  },
   watch: {
-    search (val) {
-      if (val && val.length >= 3) {
-        val && val !== this.select && this.querySelections(val)
-      } else {
-        this.items.splice(0,this.items.length)
-      }
-    },
   },
   methods: {
-    ...mapActions(['fetchPokemonNames', 'setPokemon', 'setPokemonSpeciesEvId', 'cleanEvChain', 'checkPkmnIfEvolve']),
-    // Search & Retrieve
-    querySelections (v) {
-      this.isLoading = true
-      // Simulated ajax query
-      setTimeout(() => {
-        this.items = this.pokemonNames.filter(e => {return (e.Handle || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1}).map(e => {return e.Name})
-        this.isLoading = false
-      }, 200)
-    },
-    // Search & Retrieve
-    inputChanged () {
-      return new Promise((resolve) => {
-        this.setPokemon((this.pokemonNames.filter((e) => { return e.Name === this.select }))[0]).then(() => {
-          resolve()
-        })
-          this.showCards = true
-      })
-      },
+    ...mapActions(['fetchPokemonNames'])
   },
   computed:{
-    ...mapState(['pokemon', 'pokemonNames']),
-    ...mapGetters(['getPkmnName', 'getPkmnEvId', 'getCanEvolve', 'getPkmnSpecies', 'getPkmnImage', 'getPkmnEvChain'])
+    ...mapState(['pokemon', 'pokemonNames', 'globals']),
   },
   created() {
     this.fetchPokemonNames()
@@ -131,11 +89,11 @@ export default {
 
 *
 {
-  -webkit-transition: all 1.34s ease-in-out;
-  -moz-transition:  all 1.34s ease-in-out;
-  -ms-transition: all 1.34s ease-in-out;
-  -o-transition:  all 1.34s ease-in-out;
-  transition: all 1.34s ease-in-out;
+  -webkit-transition: all 1s ease-in-out;
+  -moz-transition:  all 1s ease-in-out;
+  -ms-transition: all 1s ease-in-out;
+  -o-transition:  all 1s ease-in-out;
+  transition: all 1s ease-in-out;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera
@@ -157,25 +115,49 @@ body {
   text-align: center;
 }
 
+.v-application {
+  display: flex;
+  background: none;
+  color: #FFF;
+}
+
 .v-field {
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 15px;
-  backdrop-filter: blur(7px);
+  border-radius: 25px;
   -webkit-backdrop-filter: blur(7px);
-  box-shadow: 20px 20px 50px rgba(0,0,0, 0.15);
-  border-top: 1px solid rgba(255,255,255,0.25);
-  border-left: 1px solid rgba(255,255,255,0.25);
+  border: 0.1px solid rgba(255,255,255,0.25);
+}
+
+.v-menu .v-overlay__content{
+  border-radius: 25px;
+}
+
+/* When Using * Transition settings*/
+.v-overlay__content {
+  -webkit-transition: all 0s ease-in-out;
+  transition: all 0s ease-in-out;
+}
+
+.v-menu {
+  top: 50%;
+  left: 50%;
+  -webkit-transition: all 0s ease-in-out;
+  transition: all 0s ease-in-out;
 }
 
 .v-list {
-  position: relative;
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  border-radius: 0 0 15px 15px !important;
-  backdrop-filter: blur(7px);
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 25px !important;
   -webkit-backdrop-filter: blur(7px);
-  box-shadow: 20px 20px 50px rgba(0,0,0, 0.15);
-  border-top: 1px solid rgba(255,255,255,0.25);
-  border-left: 1px solid rgba(255,255,255,0.25);
+  backdrop-filter: blur(7px);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #FFF;
+  transition: all 0s ease-in-out;
+}
+
+.v-autocomplete__mask {
+  background-color: transparent;
+  background: linear-gradient(180deg,rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
 }
 
 .v-list--border {
@@ -187,10 +169,6 @@ body {
 }
 .v-field__outline {
   display: none !important;
-}
-
-.searchBar {
-  padding: 1.2rem;
 }
 
 .cardWrapper {
