@@ -1,9 +1,9 @@
 <template>
   <v-app-bar v-scroll="onScroll" flat>
     <v-container id="searchBar" class="pa-6">
-      <v-row class="d-flex flex-row align-center">
+      <v-row class="d-flex flex-row align-center" cols="12" lg="2" md="10" sm="10" xs="12">
         <v-col class="flex-grow-0"><h1 id="#homeIcon"><span v-text="getIcon('pokeball')"/></h1></v-col>
-        <v-col class=".searchBar pa-0 ma-0" cols="2" lg="2" md="10" sm="10">
+        <v-col class=".searchBar pa-0 ma-0">
           <!--  Search Bar  -->
           <v-autocomplete
               id="pkmnSearchBar"
@@ -57,7 +57,7 @@ export default {
       }
     }
   }, computed: {
-    ...mapState(['pokemon', 'pokemonNames', 'globals']),
+    ...mapState(['pokemon', 'pokemonNames', 'globalConfig']),
   },
   methods: {
     ...mapActions(['fetchPokemonNames', 'setPokemon', 'setShowCards']),
@@ -117,18 +117,24 @@ export default {
 .v-app-bar {
   background: transparent;
   color: #FFF;
-  backdrop-filter: blur(7px);
   border-bottom: 0px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0px 10px 25px 0px rgba(0, 0, 0, 0);
   transition: all .33s ease-in-out;
+    -webkit-backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    -webkit-transform: translate3d(0, 0, 0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000;
+    transform: translate3d(0, 0, 0);
+    transform: translateZ(0);
+    backdrop-filter: blur(7px);
 }
 
 .v-divider {
   margin: 2px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 25px;
-  backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
   box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.15);
   border-top: 1px solid rgba(255, 255, 255, 0.25);
   border-left: 1px solid rgba(255, 255, 255, 0.25);

@@ -72,4 +72,11 @@ export default {
 </script>
 
 <style scoped>
+svg {
+  -webkit-transition: all .314s ease-in-out;
+  -moz-transition: all .314s ease-in-out;
+  -ms-transition: all .314s ease-in-out;
+  -o-transition: all .314s ease-in-out;
+  transition: all .314s ease-in-out;
+}
 </style>

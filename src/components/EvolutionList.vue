@@ -62,14 +62,14 @@ export default {
       this.setEvolutionsToShown(this.evoSelected)
     },
     selectAll() {
-      if (!this.showAll) {
+      if (this.showAll === false) {
         [...this.pkmnEvChainList[0]].forEach((e, i) => (
             this.evoSelected.push(i),
                 this.setEvolutionsToShown(this.evoSelected),
                 this.showAll = true
         ))
       } else {
-        this.evoSelected = [null]
+        this.evoSelected = []
         this.setEvolutionsToShown(this.evoSelected)
         this.showAll = false
       }
@@ -110,8 +110,6 @@ export default {
   letter-spacing: normal;
   background: rgba(255, 255, 255, 0.01);
   border-radius: 15px;
-  backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
   border-top: 1px solid rgba(255, 255, 255, 0.25);
   border-left: 1px solid rgba(255, 255, 255, 0.25);
   border-right: 1px solid rgba(255, 255, 255, 0);
@@ -119,6 +117,21 @@ export default {
   padding-top: 0.3rem;
   padding-bottom: 0.3rem;
   box-shadow: 1px 1px 2.5px rgba(0, 0, 0, 0.25);
+}
+
+@media (min-width: 830px) {
+  .v-btn {
+    -webkit-backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    -webkit-transform: translate3d(0,0,0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000;
+    transform: translate3d(0,0,0);
+    transform: translateZ(0);
+    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(7px);
+  }
 }
 
 .v-btn-group {

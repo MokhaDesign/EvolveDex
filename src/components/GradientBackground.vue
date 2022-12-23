@@ -23,7 +23,7 @@ export default {
       hasPokemon: false
     }
   }, computed: {
-    ...mapState(['globals']),
+    ...mapState(['globalConfig']),
   },
   watch: {
     pokemon(newPokemon, oldPokemon) {
@@ -70,11 +70,18 @@ export default {
               })
         })
       }
+    },
+    checkDevice () {
+    if((/iPhone|iPad|iPod/i.test(navigator.userAgent)) === false) {
+    const bg = document.getElementById('gradientBackground')
+        bg.style.setProperty('background-attachment', 'fixed !important')
+    }
     }
   },
   mounted() {
     // Do not reset to default colours if a Pokemon is still being shown
     this.atComputedCheck()
+    this.checkDevice()
   },
 }
 </script>
@@ -103,19 +110,17 @@ export default {
 #gradientBackground {
   --darkBgColor: #2e251c;
   --lightBgColor: #9d9b99;
-
-  width: 200%;
-  height: 200%;
+  width: 100vw;
+  height: 120vh;
   position: fixed;
   z-index: -1;
   pointer-events: none;
   background-color: var(--darkBgColor);
-  background-attachment: fixed !important;
+  background-attachment: inherit;
   background: -moz-linear-gradient(0deg, var(--darkBgColor) 0%, var(--lightBgColor) 100%);
   background: -webkit-linear-gradient(0deg, var(--darkBgColor) 0%, var(--lightBgColor) 100%);
   background: linear-gradient(0deg, var(--darkBgColor) 0%, var(--lightBgColor) 100%);
   transition: background 15s ease;
-
 }
 
 #pokemonCard * > h1 {

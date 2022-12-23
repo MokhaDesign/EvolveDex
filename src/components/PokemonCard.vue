@@ -1,12 +1,13 @@
 <template>
   <!--  Pokemon Card  -->
-  <v-container id="pokemonCard" class="d-flex fill-height mt-12">
+  <v-container id="pokemonCard" class="d-flex fill-height mt-12 px-0">
+<!--    TODO: Figure this out-->
     <v-row class="justify-center">
-      <v-col cols="8" lg="10" md="12" sm="10" xl="6">
+      <v-col cols="12" xl="6" lg="10" md="12" sm="12">
         <v-card id="pokemonCardTilt" class="py-3 mainCard">
           <v-row class="justify-center" style="justify-content: center">
             <!-- Pokemon Image  -->
-            <v-col cols="10" lg="3" md="4" style="display: flex; justify-content: center; align-items: center;">
+            <v-col cols="10" lg="3" md="4" class="d-flex pa-0" style="justify-content: center; align-items: center;">
               <v-img :lazy-src="pokemon.ImageUrl" :src="pokemon.ImageUrl" alt="Pokemon Artwork" crossorigin="anonymous"
                      max-height="475" max-width="475" style="z-index: 1; justify-content: center;"/>
             </v-col>
@@ -32,6 +33,7 @@ import MainCard from "@/components/MainCard";
 import EvolutionList from "@/components/EvolutionList";
 import VanillaTilt from 'vanilla-tilt';
 import {getIconFromType} from "@/composables/pkmnMixin";
+import {mapState} from "vuex";
 
 export default {
   name: 'PokemonCard',
@@ -43,8 +45,12 @@ export default {
     pokemon: [Object]
   },
   mixins: ['getIconFromType'],
+  computed: {
+    ...mapState(['globalConfig']),
+  },
   methods: {
     tilt() {
+      if (this.globalConfig.isMobile === false) {
       VanillaTilt.init(document.getElementById("pokemonCardTilt"), {
         max: 5,
         speed: 500,
@@ -53,7 +59,8 @@ export default {
         gyroscope: true,
         scale: 1.035,
         perspective: 1000
-      });
+      })
+    }
     },
     getIcon(pkmnType) {
       return getIconFromType(pkmnType)
@@ -63,7 +70,6 @@ export default {
     this.tilt()
   },
   updated() {
-    console.log(this.getIcon(this.pokemon.Types))
   }
 }
 </script>
@@ -72,11 +78,16 @@ export default {
 .mainCard {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 15px;
-  backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
   box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.15);
   border-top: 1px solid rgba(255, 255, 255, 0.25);
   border-left: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+@media (min-width: 830px) {
+  .mainCard {
+    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(7px);
+  }
 }
 
 .cardType {

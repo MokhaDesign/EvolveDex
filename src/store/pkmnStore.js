@@ -14,9 +14,10 @@ const P = new Pokedex.Pokedex(options)
 export default createStore({
     state() { // variables
         return {
-            globals: {
+            globalConfig: {
                 showCards: false,
                 showAllEvo: false,
+                isMobile: false,
                 css:
                     {
                         titleTextColor: '#FFF',
@@ -144,15 +145,18 @@ export default createStore({
             state.pokemon.NextEvolutions[0][evolutionIndex].Types = evolutionTypes
         },
         SET_GLOBAL_SHOWCARDS(state, showCards) {
-            state.globals.showCards = showCards
+            state.globalConfig.showCards = showCards
+        },
+        SET_GLOBAL_ISMOBILE(state, isMobile) {
+            state.globalConfig.isMobile = isMobile
         },
         SET_GLOBAL_COLORS(state, {titleTextColor, bodyTextColor, darkBgColor, lightBgColor, appBarColor, navBarColor}) {
-            state.globals.css.titleTextColor = titleTextColor
-            state.globals.css.bodyTextColor = bodyTextColor
-            state.globals.css.darkBgColor = darkBgColor
-            state.globals.css.lightBgColor = lightBgColor
-            state.globals.css.appBarColor = appBarColor
-            state.globals.css.navBarColor = navBarColor
+            state.globalConfig.css.titleTextColor = titleTextColor
+            state.globalConfig.css.bodyTextColor = bodyTextColor
+            state.globalConfig.css.darkBgColor = darkBgColor
+            state.globalConfig.css.lightBgColor = lightBgColor
+            state.globalConfig.css.appBarColor = appBarColor
+            state.globalConfig.css.navBarColor = navBarColor
         }
     },
     actions: { // called via dispatch('actionName', payload)
@@ -168,7 +172,7 @@ export default createStore({
                     [...response.results].forEach(element => {
                         let p
                         p = {
-                            Name: capitalized((element.name).replace(/-/g, ' ')),
+                            Name: capitalized((element.name).split('-').join(' ')),
                             Handle: element.name,
                             Id: element.url.split('/')[6]
                         }
@@ -192,14 +196,14 @@ export default createStore({
                                 commit('SET_POKEMON_EVCHAIN', response)
                             })
                             .then(() => dispatch('cleanEvChain'))
-                            .then(() => console.log(state.pokemonEvolutions))
+                            // .then(() => console.log(state.pokemonEvolutions))
                             .then(() => dispatch('checkPkmnIfEvolve'))
                             .then(() => dispatch('setTypes', {
                                 pokemonName: state.pokemon.Handle,
                                 isEvolution: false,
                                 evolutionIndex: 0
                             })
-                                .then(() => console.log(state.pokemon))
+                                // .then(() => console.log(state.pokemon))
                                 .then(() => resolve()))
                     })
             })
@@ -216,7 +220,7 @@ export default createStore({
         cleanEvChain({commit, state, dispatch}) {
             return new Promise((resolve) => {
                 commit('SET_POKEMON_EVOLUTIONS', [])
-                console.log(state.pokemon.EvChain.chain)
+                // console.log(state.pokemon.EvChain.chain)
                 let evData = state.pokemon.EvChain.chain
                 // Base Stage
                 state.pokemonEvolutions.push({
@@ -313,6 +317,9 @@ export default createStore({
         setShowCards({commit}, showCards) {
             commit('SET_GLOBAL_SHOWCARDS', showCards)
         },
+        setIsMobile({commit}) {
+          commit('SET_GLOBAL_ISMOBILE', ((/iPhone|iPad|iPod|Android/i.test(navigator.userAgent))))
+        },
         setCssColors({commit}, {titleTextColor, bodyTextColor, darkBgColor, lightBgColor, appBarColor, navBarColor}) {
             commit('SET_GLOBAL_COLORS', ({
                 titleTextColor: titleTextColor,
@@ -327,12 +334,12 @@ export default createStore({
             [...ids].forEach(id => {
                 let el = document.getElementById(id)
                 if (el) {
-                    el.style.setProperty('--titleTextColor', state.globals.css.titleTextColor)
-                    el.style.setProperty('--bodyTextColor', state.globals.css.bodyTextColor)
-                    el.style.setProperty('--darkBgColor', state.globals.css.darkBgColor)
-                    el.style.setProperty('--lightBgColor', state.globals.css.lightBgColor)
-                    el.style.setProperty('--navBarColor', state.globals.css.navBarColor)
-                    el.style.setProperty('--appBarColor', state.globals.css.appBarColor)
+                    el.style.setProperty('--titleTextColor', state.globalConfig.css.titleTextColor)
+                    el.style.setProperty('--bodyTextColor', state.globalConfig.css.bodyTextColor)
+                    el.style.setProperty('--darkBgColor', state.globalConfig.css.darkBgColor)
+                    el.style.setProperty('--lightBgColor', state.globalConfig.css.lightBgColor)
+                    el.style.setProperty('--navBarColor', state.globalConfig.css.navBarColor)
+                    el.style.setProperty('--appBarColor', state.globalConfig.css.appBarColor)
                 }
             })
         }

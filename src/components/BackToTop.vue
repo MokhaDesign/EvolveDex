@@ -31,16 +31,29 @@ export default {
   background-color: rgba(255, 255, 255, 0.1) !important;
   opacity: 0;
   border-radius: 25px;
-  backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
   box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
+@media (min-width: 830px) {
+.v-btn {
+  -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  -webkit-transform: translate3d(0,0,0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000;
+  transform: translate3d(0,0,0);
+  transform: translateZ(0);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+}
+}
+
 .go-top {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
+  bottom: 20px;
+  right: 20px;
   z-index: 1900;
 }
 

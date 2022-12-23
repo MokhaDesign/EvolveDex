@@ -1,20 +1,25 @@
 <template>
-  <v-col class="pt-0" cols="8" lg="12" md="7" sm="12" style="display: inline-grid;" xl="8">
-    <v-container id="pokemonEvolutionCard" class="pt-0">
+  <v-col class="inlineGrid pt-0 px-sm-0" cols="12" style="justify-content: center;" xl="8">
+    <v-container id="pokemonEvolutionCard" class="pt-0 px-sm-0">
       <v-row style="justify-content:center">
-        <v-col v-for="item in evolutions[0]" :key="item.Id" :class="showCard(item) ? '' : 'd-none' "
-               cols="4" lg="4" sm="6" style="display: inline-grid;">
-          <v-container class="py-3 pkmnEvoCard pkmnEvoCardTilt">
+        <v-col v-for="item in evolutions[0]" :key="item.Id" :class="showCard(item) ? '' : 'd-none'"
+               :lg="evolutionsToShown.length <= 3 ? (12/evolutionsToShown.length) : 4" :md="evolutionsToShown.length <= 3 ? (12/evolutionsToShown.length) : 6" class="inlineGrid"
+               cols="12" sm="6"
+               style="transition: max-width 0s linear !important;">
+          <!--          TODO Here-->
+          <v-container v-resize="rearrangeCards" :style="globalConfig.isMobile ? 'mobileCards' : ''"
+                       class="py-3 pkmnEvoCard pkmnEvoCardTilt">
             <v-row class="justify-center">
               <h1 v-if="item.Name" style="text-transform: capitalize;" v-on:click="inputChanged(item.Name)"
-                  v-text="' ' + item.Name"/>
+                  v-text="' ' + item.Name.split('-').join(' ')"/>
             </v-row>
             <v-row class="justify-center">
               <v-divider></v-divider>
               <!-- Pokemon Image  -->
               <v-col style="display: flex; justify-content: center; align-items: center;">
                 <v-img :lazy-src="item.ImageUrl" :src="item.ImageUrl" alt="Pokemon Artwork"
-                       crossorigin="anonymous" max-height="237.5" max-width="237.5" style="z-index: 1; justify-content: center;"/>
+                       crossorigin="anonymous" max-height="237.5" max-width="237.5"
+                       style="z-index: 1; justify-content: center;"/>
               </v-col>
             </v-row>
             <!-- Pokemon Info  -->
@@ -50,24 +55,26 @@ export default {
   },
   mixins: ['getIconFromType', 'appendEvolutionModifiers', 'capitaliseFirst'],
   computed: {
-    ...mapState(['pokemonNames']),
+    ...mapState(['pokemonNames', 'globalConfig']),
   },
   methods: {
-    ...mapActions(['setPokemon', 'setShowCards']),
+    ...mapActions(['setPokemon', 'setShowCards', 'setEvolutionsToShown']),
     tilt() {
-      const cards = document.getElementsByClassName("pkmnEvoCardTilt");
-      [...cards].forEach(card => {
-        VanillaTilt.init(card, {
-          max: 5,
-          speed: 500,
-          glare: true,
-          "max-glare": 0.25,
-          gyroscope: true,
-          reverse: true,
-          scale: 1.035,
-          perspective: 1000
+      if (this.globalConfig.isMobile === false) {
+        const cards = document.getElementsByClassName("pkmnEvoCardTilt");
+        [...cards].forEach(card => {
+          VanillaTilt.init(card, {
+            max: 5,
+            speed: 500,
+            glare: true,
+            "max-glare": 0.25,
+            gyroscope: true,
+            reverse: true,
+            scale: 1.035,
+            perspective: 1000
+          })
         })
-      });
+      }
     },
     showCard(e) {
       return this.evolutionsToShown.some((v) => {
@@ -91,10 +98,26 @@ export default {
             document.getElementById('goTop').scrollIntoView({behavior: 'smooth'})
         )
         this.setPokemon((this.pokemonNames.filter(e => e.Handle === pkmnName))[0]).then(() => {
+          let setEvoToShow = [null]
+          this.setEvolutionsToShown(setEvoToShow)
           resolve()
         })
       })
     },
+    rearrangeCards() {
+      if (!this.globalConfig.isMobile) {
+        let cards = document.querySelectorAll('.pkmnEvoCardTilt');
+        if (window.innerWidth <= 580) {
+          [...cards].forEach((card) => {
+            card.classList.add('mobileCards')
+          })
+        } else {
+          [...cards].forEach((card) => {
+            card.classList.remove('mobileCards')
+          })
+        }
+      }
+    }
   },
   mounted() {
     this.tilt()
@@ -107,11 +130,24 @@ export default {
 .pkmnEvoCard {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 15px;
-  backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
   box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.15);
   border-top: 1px solid rgba(255, 255, 255, 0.25);
   border-left: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+@media (min-width: 830px) {
+  .pkmnEvoCard {
+    -webkit-backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    -webkit-transform: translate3d(0, 0, 0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000;
+    transform: translate3d(0, 0, 0);
+    transform: translateZ(0);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+  }
 }
 
 .cardType {
@@ -119,7 +155,7 @@ export default {
   font-family: Montserrat, Railway, Arial, sans-serif;
   position: absolute;
   bottom: 0;
-  right: 0%;
+  right: 0;
   width: 100%;
   font-size: 2.0rem;
   text-transform: uppercase;
@@ -127,6 +163,10 @@ export default {
   font-weight: 700;
   color: rgba(255, 255, 255, 0.01) !important;
   text-shadow: -0.5px -0.5px 0.5px rgba(0, 0, 0, 0.08), 1px 1px 0.5px rgba(255, 255, 255, 0.05);
+}
+
+.inlineGrid {
+  display: inline-grid;
 }
 
 .pkmnEvoCardWrapper {
@@ -174,6 +214,12 @@ p {
   font-family: Essentiarum;
   font-weight: normal;
   font-display: block;
+}
+
+.mobileCards {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center
 }
 
 

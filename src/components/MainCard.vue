@@ -4,23 +4,24 @@
       <h1 v-if="pkmnName">{{ (pkmnName) }}</h1>
     </v-col>
     <v-col>
-      <h1 class="pokemonTypes" style="text-align: end">
+      <h1 class="pokemonTypes px-2" style="text-align: end">
         <span v-for="type in pkmnTypes" v-bind:key="type" v-text="getIcon(type)"/>
       </h1>
     </v-col>
   </v-row>
   <div v-if="pkmnName">
-  <span v-if="pkmnCanEvolve">
     <v-divider></v-divider>
-    <p class="pa-12 pa-sm-6">{{ capitalised(pkmnName) }} has <strong>{{ pkmnEvLength }} {{
+  <p v-if="pkmnCanEvolve" style="padding-top: 1.2rem">
+    <span>{{ capitalised(pkmnName) }} has <strong>{{ pkmnEvLength }} {{
         pluralise('evolution')
-      }}</strong></p></span>
-    <p v-else class="pa-12 pa-sm-6">{{ capitalised(pkmnName) }} is <strong>Fully Evolved</strong></p>
+      }}</strong></span></p>
+    <p v-else style="padding-top: 1.2rem">{{ capitalised(pkmnName) }} is <strong>Fully Evolved</strong></p>
   </div>
 </template>
 
 <script>
 import {getIconFromType} from "@/composables/pkmnMixin";
+import {mapState} from "vuex";
 
 export default {
   name: 'MainCard',
@@ -31,6 +32,9 @@ export default {
     pkmnTypes: Array
   },
   mixins: ['getIconFromType'],
+  computed: {
+    ...mapState(['globalConfig'])
+  },
   methods: {
     capitalised(name) {
       if (name) {
@@ -62,7 +66,6 @@ h1 {
 }
 
 p {
-  padding-top: 1.2rem;
   font-family: Montserrat, Railway, Arial, sans-serif;
 }
 
