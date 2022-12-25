@@ -2,11 +2,21 @@
   <v-app-bar v-scroll="onScroll" flat>
     <v-container id="searchBar" class="pa-6">
       <v-row class="d-flex flex-row align-center" cols="12" lg="2" md="10" sm="10" xs="12">
-        <v-col class="flex-grow-0"><h1 id="#homeIcon"><span v-text="getIcon('pokeball')"/></h1></v-col>
+        <v-col class="flex-grow-0">
+          <h1 id="homeIcon"
+              v-on:click="clearPkmn"
+              v-on:mouseenter="fakeHover('homeIcon', true, false)"
+              v-on:mouseleave="fakeHover('homeIcon', false, false)"
+              v-on:touchend="fakeHover('homeIcon', false, true)"
+              v-on:touchstart="fakeHover('homeIcon', true, true)"
+              v-text="getIcon('pokeball')">
+          </h1>
+        </v-col>
         <v-col class=".searchBar pa-0 ma-0">
           <!--  Search Bar  -->
           <v-autocomplete
               id="pkmnSearchBar"
+              ref="pkmnSearchBar"
               v-model="select"
               v-model:search="search"
               :items="items"
@@ -60,7 +70,7 @@ export default {
     ...mapState(['pokemon', 'pokemonNames', 'globalConfig']),
   },
   methods: {
-    ...mapActions(['fetchPokemonNames', 'setPokemon', 'setShowCards']),
+    ...mapActions(['fetchPokemonNames', 'setPokemon', 'setShowCards', 'setPokemonNull']),
     // Search & Retrieve
     querySelections(v) {
       // Simulated ajax query
@@ -99,6 +109,7 @@ export default {
           navbar.style.setProperty('border-bottom', '1px solid rgba(255, 255, 255, 0.15)')
           navbar.style.setProperty('box-shadow', '0px 10px 25px 0px rgba(0, 0, 0, 0.15)')
           navbar.style.setProperty('background', 'rgba(255, 255, 255, 0.15)')
+          navbar.style.setProperty('backdrop-filter', 'blur(7px)')
         }
       } else {
         let navbar = document.querySelector('.v-app-bar')
@@ -107,8 +118,25 @@ export default {
         navbar.style.setProperty('border-bottom', '0px solid rgba(255, 255, 255, 0.15)')
         navbar.style.setProperty('box-shadow', '0px 10px 25px 0px rgba(0, 0, 0, 0)')
         navbar.style.setProperty('background', 'rgba(255, 255, 255, 0)')
+        navbar.style.setProperty('backdrop-filter', 'none')
       }
-    }
+    },
+    clearPkmn() {
+      this.setPokemonNull()
+    },
+    fakeHover(id, hover, touch) {
+      if (hover) {
+        document.getElementById(id).classList.add('fakeHover')
+      } else {
+        if (touch) {
+          setTimeout(() => {
+            document.getElementById(id).classList.remove('fakeHover')
+          }, 250)
+        } else {
+          document.getElementById(id).classList.remove('fakeHover')
+        }
+      }
+    },
   }
 }
 </script>
@@ -120,15 +148,14 @@ export default {
   border-bottom: 0px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0px 10px 25px 0px rgba(0, 0, 0, 0);
   transition: all .33s ease-in-out;
-    -webkit-backface-visibility: hidden;
-    -webkit-perspective: 1000;
-    -webkit-transform: translate3d(0, 0, 0);
-    -webkit-transform: translateZ(0);
-    backface-visibility: hidden;
-    perspective: 1000;
-    transform: translate3d(0, 0, 0);
-    transform: translateZ(0);
-    backdrop-filter: blur(7px);
+  -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000;
+  transform: translate3d(0, 0, 0);
+  transform: translateZ(0);
 }
 
 .v-divider {
@@ -144,13 +171,22 @@ h1 {
   font-family: Montserrat, Railway, Arial, sans-serif;
   font-weight: 700;
   color: #FFF;
-  line-height: 1rem;
-
 }
 
-h1 > span {
+#homeIcon {
+  cursor: pointer;
   font-family: Essentiarum;
   font-weight: normal;
   font-display: block;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+  transition: all 0.3s ease-in-out;
 }
+
+
+.fakeHover {
+  border-radius: 25px !important;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 </style>

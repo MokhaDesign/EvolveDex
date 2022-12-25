@@ -7,10 +7,9 @@
       <v-icon :icon="pokemon.CanEvolve ? 'mdi-checkbox-marked-circle-outline' : 'mdi-checkbox-blank-circle-outline'"
               class="ml-2"></v-icon>
       <v-icon
-          :icon="pokemon.EvolutionsToShow[0] === null || pokemon.EvolutionsToShow.length === 0 ? 'mdi-eye-off' : 'mdi-eye'"
+          :icon="(pokemon.EvolutionsToShow[0] === null || pokemon.EvolutionsToShow.length === 0) ? 'mdi-eye-off' : 'mdi-eye'"
           class="ml-2"></v-icon>
       <v-icon class="ml-2" icon="mdi-graph-outline"></v-icon>
-
     </v-system-bar>
 
 
@@ -37,8 +36,7 @@
       </v-container>
 
     </v-container>
-
-    <BackToTop></BackToTop>
+    <NavControls></NavControls>
   </v-app>
 
 </template>
@@ -47,30 +45,40 @@
 import PokemonCard from "@/components/PokemonCard";
 import GradientBackground from "@/components/GradientBackground";
 import PokemonEvolutionCard from "@/components/PokemonEvolutionCard";
-import {mapActions, mapState} from "vuex";
-import BackToTop from "@/components/BackToTop";
-import {useHead} from '@unhead/vue'
 import SearchBar from "@/components/SearchBar";
 
+import {mapActions, mapState} from "vuex";
+import {useHead} from '@unhead/vue'
+import NavControls from "@/components/NavControls";
 
 export default {
   name: 'App',
   components: {
+    NavControls,
     SearchBar,
-    BackToTop,
     PokemonEvolutionCard,
     PokemonCard,
     GradientBackground
   },
   watch: {},
   methods: {
-    ...mapActions(['fetchPokemonNames', 'setIsMobile'])
+    ...mapActions(['fetchPokemonNames', 'setIsMobile', 'setPokemon', 'setShowCards']),
+    pokemonFromUrl() {
+      const nameFromUrl = (window.location.pathname).split('/')[1].toLowerCase()
+      const pkmnFromUrl = (this.pokemonNames.filter(e => e.Handle === nameFromUrl))[0]
+      if (pkmnFromUrl) {
+        this.setPokemon(pkmnFromUrl)
+            .then(this.setShowCards(true))
+      }
+    }
   },
   computed: {
     ...mapState(['pokemon', 'pokemonNames', 'globalConfig']),
   },
   created() {
-    this.fetchPokemonNames()
+    this.fetchPokemonNames().then(
+        this.pokemonFromUrl
+    )
     useHead({
       title: 'E•Dex',
       meta: [
@@ -135,11 +143,11 @@ body {
   .v-field {
     -webkit-backface-visibility: hidden;
     -webkit-perspective: 1000;
-    -webkit-transform: translate3d(0,0,0);
+    -webkit-transform: translate3d(0, 0, 0);
     -webkit-transform: translateZ(0);
     backface-visibility: hidden;
     perspective: 1000;
-    transform: translate3d(0,0,0);
+    transform: translate3d(0, 0, 0);
     transform: translateZ(0);
     -webkit-backdrop-filter: blur(7px);
     backdrop-filter: blur(7px);
@@ -172,11 +180,11 @@ body {
 
   -webkit-backface-visibility: hidden;
   -webkit-perspective: 1000;
-  -webkit-transform: translate3d(0,0,0);
+  -webkit-transform: translate3d(0, 0, 0);
   -webkit-transform: translateZ(0);
   backface-visibility: hidden;
   perspective: 1000;
-  transform: translate3d(0,0,0);
+  transform: translate3d(0, 0, 0);
   transform: translateZ(0);
   -webkit-backdrop-filter: blur(7px);
   backdrop-filter: blur(7px);
@@ -204,6 +212,31 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.v-tooltip > .v-overlay__content {
+  font-family: Montserrat, Railway, Arial, sans-serif;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
+  box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.v-snackbar__wrapper {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
+  box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(7px);
+  min-height: 40px;
+  transform: translate3d(0, -150%, 0);
+}
+
+.v-snackbar__content {
+  font-family: Montserrat, Railway, Arial, sans-serif;
+  line-height: 0px;
+  font-size: 0.875rem;
+  text-align: center;
 }
 
 </style>

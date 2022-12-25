@@ -37,9 +37,6 @@
 <script>
 export default {
   name: "PokeballBackground",
-  props: {
-    hasPokemon: Boolean,
-  },
   data() {
     return {
       window: {

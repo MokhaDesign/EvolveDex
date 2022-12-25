@@ -3,25 +3,32 @@
     <v-container id="pokemonEvolutionCard" class="pt-0 px-sm-0">
       <v-row style="justify-content:center">
         <v-col v-for="item in evolutions[0]" :key="item.Id" :class="showCard(item) ? '' : 'd-none'"
-               :lg="evolutionsToShown.length <= 3 ? (12/evolutionsToShown.length) : 4" :md="evolutionsToShown.length <= 3 ? (12/evolutionsToShown.length) : 6" class="inlineGrid"
-               cols="12" sm="6"
+               :lg="evolutionsToShown.length <= 3 ? (12/evolutionsToShown.length) : 4"
+               :md="evolutionsToShown.length <= 3 ? (12/evolutionsToShown.length) : 6"
+               :sm="evolutionsToShown.length <= 3 ? (12/evolutionsToShown.length) : 4"
+               class="inlineGrid"
+               cols="12"
                style="transition: max-width 0s linear !important;">
-          <!--          TODO Here-->
-          <v-container v-resize="rearrangeCards" :style="globalConfig.isMobile ? 'mobileCards' : ''"
-                       class="py-3 pkmnEvoCard pkmnEvoCardTilt">
+          <v-container v-resize="rearrangeCards" class="py-3 pkmnEvoCard pkmnEvoCardTilt">
+
+            <!-- Pokemon Name  -->
             <v-row class="justify-center">
-              <h1 v-if="item.Name" style="text-transform: capitalize;" v-on:click="inputChanged(item.Name)"
+              <h1 v-if="item.Name" style="text-transform: capitalize;" v-on:click="forwardPokemon(item.Name)"
                   v-text="' ' + item.Name.split('-').join(' ')"/>
             </v-row>
+
+            <!-- Pokemon Image  -->
             <v-row class="justify-center">
-              <v-divider></v-divider>
-              <!-- Pokemon Image  -->
+              <v-divider :class="isAtBreakpoint ? 'd-none' : ''"></v-divider>
               <v-col style="display: flex; justify-content: center; align-items: center;">
                 <v-img :lazy-src="item.ImageUrl" :src="item.ImageUrl" alt="Pokemon Artwork"
-                       crossorigin="anonymous" max-height="237.5" max-width="237.5"
+                       crossorigin="anonymous"
+                       max-height="256" max-width="256"
+                       min-height="128" min-width="128"
                        style="z-index: 1; justify-content: center;"/>
               </v-col>
             </v-row>
+
             <!-- Pokemon Info  -->
             <v-row class="justify-center" style="justify-content: center; margin-bottom: 1.2rem;">
               <v-divider></v-divider>
@@ -34,6 +41,7 @@
                 <p class="cardType">Evolution</p>
               </v-col>
             </v-row>
+
           </v-container>
         </v-col>
       </v-row>
@@ -43,9 +51,9 @@
 
 <script>
 import VanillaTilt from "vanilla-tilt";
-import {getIconFromType, appendEvolutionModifier} from "@/composables/pkmnMixin";
+import {appendEvolutionModifier, getIconFromType} from "@/composables/pkmnMixin";
 import {capitaliseFirst} from "@/composables/utils"
-import {mapState, mapActions} from "vuex";
+import {mapActions, mapState} from "vuex";
 
 export default {
   name: "PokemonEvolutionCard",
@@ -54,6 +62,11 @@ export default {
     evolutionsToShown: [Object],
   },
   mixins: ['getIconFromType', 'appendEvolutionModifiers', 'capitaliseFirst'],
+  data() {
+    return {
+      isAtBreakpoint: false,
+    }
+  },
   computed: {
     ...mapState(['pokemonNames', 'globalConfig']),
   },
@@ -92,7 +105,7 @@ export default {
       string = (this.appendModifiers(pkmnModifiers)).toString().replace(/,/g, ' ')
       return capitaliseFirst(string)
     },
-    inputChanged(pkmnName) {
+    forwardPokemon(pkmnName) {
       return new Promise((resolve) => {
         this.$nextTick(() =>
             document.getElementById('goTop').scrollIntoView({behavior: 'smooth'})
@@ -105,7 +118,8 @@ export default {
       })
     },
     rearrangeCards() {
-      if (!this.globalConfig.isMobile) {
+      this.updatedAtBreakpoint()
+      if (this.globalConfig.isMobile === false) {
         let cards = document.querySelectorAll('.pkmnEvoCardTilt');
         if (window.innerWidth <= 580) {
           [...cards].forEach((card) => {
@@ -116,7 +130,15 @@ export default {
             card.classList.remove('mobileCards')
           })
         }
+      } else {
+        let cards = document.querySelectorAll('.pkmnEvoCardTilt');
+        [...cards].forEach((card) => {
+          card.classList.add('mobileCards')
+        })
       }
+    },
+    updatedAtBreakpoint() {
+      this.isAtBreakpoint = (window.innerWidth <= 580 || this.globalConfig.isMobile)
     }
   },
   mounted() {
@@ -165,6 +187,12 @@ export default {
   text-shadow: -0.5px -0.5px 0.5px rgba(0, 0, 0, 0.08), 1px 1px 0.5px rgba(255, 255, 255, 0.05);
 }
 
+@media (max-width: 960px) {
+  .cardType {
+    font-size: 1.4rem;
+  }
+}
+
 .inlineGrid {
   display: inline-grid;
 }
@@ -203,7 +231,7 @@ p {
   font-family: Montserrat, Railway, Arial, sans-serif;
 }
 
-@media only screen and (max-width: 960px) {
+@media only screen and (max-width: 600px) {
   .cardType {
     display: none;
   }
@@ -219,7 +247,8 @@ p {
 .mobileCards {
   display: flex;
   flex-flow: row wrap;
-  align-items: center
+  flex-direction: column;
+  align-items: center;
 }
 
 

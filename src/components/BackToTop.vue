@@ -2,7 +2,16 @@
   <v-btn
       id="backToTop"
       v-scroll="onScroll"
-      class="go-top" color="primary" icon="mdi-arrow-up" @click="onClick"></v-btn>
+      class="go-top"
+      color="primary" fab icon="mdi-arrow-up" @click="onClick">
+    <v-icon>mdi-arrow-up</v-icon>
+    <v-tooltip
+        id="goTopTooltip"
+        activator="parent"
+        location="start">
+      <span v-text="'Back to Top'"/>
+    </v-tooltip>
+  </v-btn>
 </template>
 
 <script>
@@ -12,8 +21,10 @@ export default {
     onScroll() {
       if (window.scrollY >= 200) {
         document.getElementById('backToTop').style.setProperty('opacity', 1);
+        document.getElementById('goTopTooltip').style.setProperty('opacity', 1);
       } else {
         document.getElementById('backToTop').style.setProperty('opacity', 0);
+        document.getElementById('goTopTooltip').style.setProperty('opacity', 0);
       }
     },
     onClick() {
@@ -35,19 +46,19 @@ export default {
   border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
-@media (min-width: 830px) {
-.v-btn {
-  -webkit-backface-visibility: hidden;
-  -webkit-perspective: 1000;
-  -webkit-transform: translate3d(0,0,0);
-  -webkit-transform: translateZ(0);
-  backface-visibility: hidden;
-  perspective: 1000;
-  transform: translate3d(0,0,0);
-  transform: translateZ(0);
-  -webkit-backdrop-filter: blur(7px);
-  backdrop-filter: blur(7px);
-}
+@media (min-width: 960px) {
+  .v-btn {
+    -webkit-backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    -webkit-transform: translate3d(0, 0, 0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000;
+    transform: translate3d(0, 0, 0);
+    transform: translateZ(0);
+    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(7px);
+  }
 }
 
 .go-top {
@@ -57,27 +68,5 @@ export default {
   z-index: 1900;
 }
 
-.go-top a, .go-top a:visited {
-  text-decoration: none;
-  border: 0 none;
-  display: block;
-  height: 60px;
-  width: 60px;
-  line-height: 60px;
-  text-align: center;
-  color: rgba(33, 33, 33, 0.75);
-  text-transform: uppercase;
-  -webkit-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
-}
 
-.go-top a i, .go-top a:visited i {
-  font-size: 18px;
-  line-height: inherit;
-}
-
-.go-top a:hover, .go-top a:focus {
-  border: 0.2rem solid #333;
-  color: #333;
-}
 </style>

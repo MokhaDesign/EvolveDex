@@ -147,6 +147,9 @@ export default createStore({
         SET_GLOBAL_SHOWCARDS(state, showCards) {
             state.globalConfig.showCards = showCards
         },
+        SET_GLOBAL_SHOWALLEVO(state, showAllEvo) {
+            state.globalConfig.showAllEvo = showAllEvo
+        },
         SET_GLOBAL_ISMOBILE(state, isMobile) {
             state.globalConfig.isMobile = isMobile
         },
@@ -157,10 +160,14 @@ export default createStore({
             state.globalConfig.css.lightBgColor = lightBgColor
             state.globalConfig.css.appBarColor = appBarColor
             state.globalConfig.css.navBarColor = navBarColor
-        }
+        },
+        SET_POKEMON_NULL(state, nullPkmn) {
+            state.pokemon = nullPkmn
+        },
     },
     actions: { // called via dispatch('actionName', payload)
         fetchPokemonNames({state}) {
+            // For now, I leave the Hisuian and other variants out, until I figure out how to make their evolution chain show up correctly
             const interval = {
                 offset: 0,
                 limit: 904,
@@ -204,6 +211,8 @@ export default createStore({
                                 evolutionIndex: 0
                             })
                                 // .then(() => console.log(state.pokemon))
+                                // pkmnToUrl
+                                .then(() => window.history.replaceState('', '', ('/' + state.pokemon.Handle)))
                                 .then(() => resolve()))
                     })
             })
@@ -289,11 +298,15 @@ export default createStore({
         checkPkmnIfEvolve({state, commit}) {
             return new Promise((resolve) => {
                 [...state.pokemonEvolutions].forEach(element => {
-                    if (element.Name === state.pokemon.Handle) {
+                    const nameCheck = state.pokemon.Handle.indexOf(element.Name) > -1
+                    if (nameCheck) {
                         resolve(state.pokemon.NextEvolutions = [], state.pokemon.NextEvolutions.push(state.pokemonEvolutions.filter((e) => e.Stage === element.Stage + 1)), commit('SET_POKEMON_CANEVOLVE', (state.pokemon.NextEvolutions[0].length != 0)))
                     }
                 })
             })
+        },
+        setShowAllEvolutions({commit}, showAllEvo) {
+            return (commit('SET_GLOBAL_SHOWALLEVO', showAllEvo))
         },
         setEvolutionsToShown({commit}, pokemonEvolutionsToShow) {
             return (commit('SET_EVOLUTIONS_TO_SHOW', pokemonEvolutionsToShow))
@@ -342,6 +355,48 @@ export default createStore({
                     el.style.setProperty('--appBarColor', state.globalConfig.css.appBarColor)
                 }
             })
+        },
+        setPokemonNull({commit}) {
+            commit('SET_GLOBAL_SHOWCARDS', false)
+            const pkmnNull =  {
+                    Name: null,
+                    Handle: null,
+                    Id: null,
+                    Types: [],
+                    EvId: null,
+                    CanEvolve: null,
+                    Species: null,
+                    ImageUrl: null,
+                    EvChain: [null],
+                    NextEvolutions: [{
+                        Name: null,
+                        Types: [],
+                        ImageUrl: null,
+                        MinLevel: null,
+                        Trigger: null,
+                        Modifiers: {
+                            Item: null,
+                            Gender: null,
+                            HeldItem: null,
+                            KnownMove: null,
+                            KnownMoveType: null,
+                            Location: null,
+                            MinAffection: null,
+                            MinBeauty: null,
+                            MinHappiness: null,
+                            NeedsOverworldRain: null,
+                            PartySpecies: null,
+                            PartyType: null,
+                            PhysicalStats: null,
+                            TimeOfDay: null,
+                            TradeSpecies: null,
+                            TurnUpsideDown: null
+                        },
+                    }],
+                    EvolutionsToShow: []
+                }
+            commit('SET_POKEMON_NULL', pkmnNull)
+            window.history.replaceState('', '', ('/'))
         }
     }
 })

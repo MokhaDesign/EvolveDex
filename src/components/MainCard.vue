@@ -11,7 +11,7 @@
   </v-row>
   <div v-if="pkmnName">
     <v-divider></v-divider>
-  <p v-if="pkmnCanEvolve" style="padding-top: 1.2rem">
+    <p v-if="pkmnCanEvolve" style="padding-top: 1.2rem">
     <span>{{ capitalised(pkmnName) }} has <strong>{{ pkmnEvLength }} {{
         pluralise('evolution')
       }}</strong></span></p>

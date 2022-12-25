@@ -25,23 +25,25 @@
 </template>
 
 <script>
-import {mapActions} from "vuex";
+import {mapActions, mapState} from "vuex";
 import {getIconFromType} from "@/composables/pkmnMixin";
 
 
 export default {
   name: 'EvolutionList',
   props: {
-    pkmnEvChainList: [Object]
+    pkmnEvChainList: [Object],
   },
   data() {
     return {
       evoSelected: [],
       showAll: false,
-      fromBtn: true,
     }
   },
   mixins: ['getIconFromType'],
+  computed: {
+    ...mapState(['globalConfig'])
+  },
   watch: {
     evoSelected(newValue, oldValue) {
       const allBtnSwitch = newValue.length % this.pkmnEvChainList[0].length;
@@ -79,9 +81,14 @@ export default {
     },
   },
   updated() {
-    this.evoSelected = [null]
-    this.setEvolutionsToShown(this.evoSelected)
-    this.showAll = false
+    if (this.globalConfig.showAllEvo === true) {
+      this.showAll = false
+      this.selectAll()
+    } else {
+      this.evoSelected = [null]
+      this.setEvolutionsToShown(this.evoSelected)
+      this.showAll = false
+    }
   }
 }
 </script>
@@ -123,11 +130,11 @@ export default {
   .v-btn {
     -webkit-backface-visibility: hidden;
     -webkit-perspective: 1000;
-    -webkit-transform: translate3d(0,0,0);
+    -webkit-transform: translate3d(0, 0, 0);
     -webkit-transform: translateZ(0);
     backface-visibility: hidden;
     perspective: 1000;
-    transform: translate3d(0,0,0);
+    transform: translate3d(0, 0, 0);
     transform: translateZ(0);
     -webkit-backdrop-filter: blur(7px);
     backdrop-filter: blur(7px);

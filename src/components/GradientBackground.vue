@@ -1,6 +1,6 @@
 <template>
   <div id="gradientBackground">
-    <PokeballBackground :has-pokemon="hasPokemon"></PokeballBackground>
+    <PokeballBackground></PokeballBackground>
   </div>
 </template>
 
@@ -63,19 +63,30 @@ export default {
                     })
               })
               .then(() => {
-                this.updateElementsColors((['gradientBackground', 'pokemonCard', 'pokemonEvolutionCard', 'appBar']))
+                this.updateElementsColors((['gradientBackground', 'pokemonCard', 'pokemonEvolutionCard', 'appBar', 'bottomNav']))
               })
               .then(() => {
                 resolve()
               })
         })
+      } else {
+        this.setCssColors(
+            {
+              titleTextColor: "#FFFFFF",
+              bodyTextColor: "#FFFFFF",
+              darkBgColor: "#2e251c",
+              lightBgColor: "#9d9b99",
+              appBarColor: "#EEEEEE",
+              navBarColor: "#EEEEEE"
+            })
+        this.updateElementsColors((['gradientBackground', 'pokemonCard', 'pokemonEvolutionCard', 'appBar', 'bottomNav']))
       }
     },
-    checkDevice () {
-    if((/iPhone|iPad|iPod/i.test(navigator.userAgent)) === false) {
-    const bg = document.getElementById('gradientBackground')
+    checkDevice() {
+      if ((/iPhone|iPad|iPod/i.test(navigator.userAgent)) === false) {
+        const bg = document.getElementById('gradientBackground')
         bg.style.setProperty('background-attachment', 'fixed !important')
-    }
+      }
     }
   },
   mounted() {
@@ -100,6 +111,12 @@ export default {
 #appBar {
   --appBarColor: #eeeeee;
   background-color: var(--appBarColor);
+}
+
+#bottomNav {
+  --appBarColor: #333;
+  --bodyTextColor: #FFF;
+  color: var(--bodyTextColor);
 }
 
 .v-system-bar {
