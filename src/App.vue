@@ -2,24 +2,39 @@
   <div id="goTop"></div>
   <v-app>
     <v-system-bar id="appBar">
-      <p v-text="pokemon.Name ? pokemon.Name : 'EvoDex'"/>
+      <p v-text="pokemon.Name ? pokemon.Name : 'EvoDex'" />
       <v-spacer></v-spacer>
-      <v-icon :icon="pokemon.CanEvolve ? 'mdi-checkbox-marked-circle-outline' : 'mdi-checkbox-blank-circle-outline'"
-              class="ml-2"></v-icon>
       <v-icon
-          :icon="(pokemon.EvolutionsToShow[0] === null || pokemon.EvolutionsToShow.length === 0) ? 'mdi-eye-off' : 'mdi-eye'"
-          class="ml-2"></v-icon>
+        :icon="
+          pokemon.CanEvolve
+            ? 'mdi-checkbox-marked-circle-outline'
+            : 'mdi-checkbox-blank-circle-outline'
+        "
+        class="ml-2"
+      ></v-icon>
+      <v-icon
+        :icon="
+          pokemon.EvolutionsToShow[0] === null ||
+          pokemon.EvolutionsToShow.length === 0
+            ? 'mdi-eye-off'
+            : 'mdi-eye'
+        "
+        class="ml-2"
+      ></v-icon>
       <v-icon class="ml-2" icon="mdi-graph-outline"></v-icon>
     </v-system-bar>
-
 
     <GradientBackground :pokemon="pokemon.ImageUrl"></GradientBackground>
     <SearchBar :pkmn-names-db="pokemonNames"></SearchBar>
 
-    <v-container class="flex-column align-center" style="display: flex; min-height: 100vh;">
-
-      <v-container v-if="globalConfig.showCards" class="flex-grow-1 d-flex flex-column justify-center">
-
+    <v-container
+      class="flex-column align-center"
+      style="display: flex; min-height: 100vh"
+    >
+      <v-container
+        v-if="globalConfig.showCards"
+        class="flex-grow-1 d-flex flex-column justify-center"
+      >
         <v-container class="cardWrapper fill-height">
           <v-row>
             <v-col>
@@ -29,16 +44,16 @@
         </v-container>
 
         <v-container class="fill-height px-0">
-          <PokemonEvolutionCard v-if="pokemon.NextEvolutions[0].length > 0" :evolutions="pokemon.NextEvolutions"
-                                :evolutions-to-shown="pokemon.EvolutionsToShow"></PokemonEvolutionCard>
+          <PokemonEvolutionCard
+            v-if="pokemon.NextEvolutions[0].length > 0"
+            :evolutions="pokemon.NextEvolutions"
+            :evolutions-to-shown="pokemon.EvolutionsToShow"
+          ></PokemonEvolutionCard>
         </v-container>
-
       </v-container>
-
     </v-container>
     <NavControls></NavControls>
   </v-app>
-
 </template>
 
 <script>
@@ -47,59 +62,65 @@ import GradientBackground from "@/components/GradientBackground";
 import PokemonEvolutionCard from "@/components/PokemonEvolutionCard";
 import SearchBar from "@/components/SearchBar";
 
-import {mapActions, mapState} from "vuex";
-import {useHead} from '@unhead/vue'
+import { mapActions, mapState } from "vuex";
 import NavControls from "@/components/NavControls";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     NavControls,
     SearchBar,
     PokemonEvolutionCard,
     PokemonCard,
-    GradientBackground
+    GradientBackground,
   },
-  watch: {},
   methods: {
-    ...mapActions(['fetchPokemonNames', 'setIsMobile', 'setPokemon', 'setShowCards']),
+    ...mapActions([
+      "fetchPokemonNames",
+      "setIsMobile",
+      "setPokemon",
+      "setShowCards",
+    ]),
     pokemonFromUrl() {
-      const nameFromUrl = (window.location.pathname).split('/')[1].toLowerCase()
-      const pkmnFromUrl = (this.pokemonNames.filter(e => e.Handle === nameFromUrl))[0]
+      const nameFromUrl = window.location.pathname.split("/")[1].toLowerCase();
+      const pkmnFromUrl = this.pokemonNames.filter(
+        (e) => e.Handle === nameFromUrl
+      )[0];
       if (pkmnFromUrl) {
-        this.setPokemon(pkmnFromUrl)
-            .then(this.setShowCards(true))
+        this.setPokemon(pkmnFromUrl).then(this.setShowCards(true));
       }
-    }
+    },
   },
   computed: {
-    ...mapState(['pokemon', 'pokemonNames', 'globalConfig']),
+    ...mapState(["pokemon", "pokemonNames", "globalConfig"]),
   },
-  created() {
-    this.fetchPokemonNames().then(
-        this.pokemonFromUrl
-    )
-    useHead({
-      title: 'E•Dex',
+  data() {
+    return {
+      title: this.pokemon ? this.pokemon.Name + " | E•Dex" : "E•Dex",
+    };
+  },
+  head() {
+    return {
+      title: this.title,
       meta: [
         {
-          name: 'EvolveDex',
-          content: 'An easy peasy **spoiler-free** micro-app to check if a Pokémon has remaining evolutions.',
+          name: "EvolveDex",
+          content:
+              "An easy peasy **spoiler-free** micro-app to check if a Pokémon has remaining evolutions.",
         },
       ],
-    })
+    };
   },
-  beforeMount() {
+  created() {
+    this.fetchPokemonNames().then(this.pokemonFromUrl);
   },
   mounted() {
-    this.setIsMobile()
+    this.setIsMobile();
   },
-}
-
+};
 </script>
 
 <style>
-
 * {
   -webkit-transition: all 1s ease-in-out;
   -moz-transition: all 1s ease-in-out;
@@ -130,7 +151,7 @@ body {
 .v-application {
   display: flex;
   background: none;
-  color: #FFF;
+  color: #fff;
 }
 
 .v-field {
@@ -175,7 +196,7 @@ body {
   background-color: rgba(255, 255, 255, 0.2) !important;
   border-radius: 25px !important;
   border: 1px solid rgba(255, 255, 255, 0.25);
-  color: #FFF;
+  color: #fff;
   transition: all 0s ease-in-out;
 
   -webkit-backface-visibility: hidden;
@@ -190,10 +211,13 @@ body {
   backdrop-filter: blur(7px);
 }
 
-
 .v-autocomplete__mask {
   background-color: transparent;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.1) 50%
+  );
 }
 
 .v-list--border {
@@ -238,5 +262,4 @@ body {
   font-size: 0.875rem;
   text-align: center;
 }
-
 </style>

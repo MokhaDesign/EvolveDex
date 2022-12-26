@@ -66,11 +66,10 @@ export default {
       return getIconFromType(pkmnType)
     },
   },
+
   mounted() {
     this.tilt()
   },
-  updated() {
-  }
 }
 </script>
 

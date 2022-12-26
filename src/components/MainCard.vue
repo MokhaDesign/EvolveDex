@@ -31,6 +31,16 @@ export default {
     pkmnEvLength: Number,
     pkmnTypes: Array
   },
+  data() {
+    return {
+      title: this.pkmnName
+    };
+  },
+  head() {
+    return {
+      title: this.title  + " | E•Dex",
+    };
+  },
   mixins: ['getIconFromType'],
   computed: {
     ...mapState(['globalConfig'])
@@ -46,9 +56,13 @@ export default {
     },
     getIcon(pkmnType) {
       return getIconFromType(pkmnType)
+    },
+    updateTitle() {
+      this.title = this.pkmnName
     }
   },
-  setup() {
+  updated() {
+    this.updateTitle()
   }
 }
 
