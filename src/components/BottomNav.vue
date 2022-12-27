@@ -14,7 +14,7 @@
 
     <span v-if="globalConfig.isMobile || window.width < 960">Evos</span>
     <v-tooltip
-        v-if="globalConfig.isMobile || window.width >= 960"
+        v-if="window.width >= 960"
         activator="parent"
         location="start">
       <span v-text="globalConfig.showAllEvo ? 'Always Show Evolutions' : 'Always Hide Evolutions'"/>
@@ -36,7 +36,7 @@
 
     <span v-if="globalConfig.isMobile || window.width < 960">Clear</span>
     <v-tooltip
-        v-if="globalConfig.isMobile || window.width >= 960"
+        v-if="window.width >= 960"
         activator="parent"
         location="start">
       <span v-text="'Clear Selection'"/>
@@ -57,7 +57,7 @@
 
     <span v-if="globalConfig.isMobile || window.width < 960">Search</span>
     <v-tooltip
-        v-if="globalConfig.isMobile || window.width >= 960"
+        v-if="window.width >= 960"
         activator="parent"
         location="start">
       <span v-text="'Search Pokémon'"/>
@@ -78,7 +78,7 @@
 
     <span v-if="globalConfig.isMobile || window.width < 960">Share</span>
     <v-tooltip
-        v-if="globalConfig.isMobile || window.width >= 960"
+        v-if="window.width >= 960"
         activator="parent"
         location="start">
       <span v-text="'Copy to Clipboard'"/>
@@ -183,8 +183,9 @@ export default {
       }
     },
     copyToClipboard() {
-      navigator.clipboard.writeText(window.location.href);
+      navigator.clipboard.writeText(window.location.href).then(() => {
       this.activateSnackbar('Copied to Clipboard')
+      })
     },
     activateSnackbar(text) {
       this.snackbar.text = text

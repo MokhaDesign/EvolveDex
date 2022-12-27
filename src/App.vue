@@ -253,7 +253,8 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(7px);
   min-height: 40px;
-  transform: translate3d(0, -150%, 0);
+/* TODO: Solution for iPad */
+  bottom: 3.6rem;
 }
 
 .v-snackbar__content {
