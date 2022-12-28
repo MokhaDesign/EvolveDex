@@ -12,5 +12,5 @@ module.exports = defineConfig({
     },
   },
 
-  publicPath: process.env.NODE_ENV === "production" ? "/EvolveDex/" : "/",
+  publicPath: process.env.NODE_ENV === "production" ? "./EvolveDex/" : "./",
 });
